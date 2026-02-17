@@ -6,18 +6,19 @@
     <title>My Live Inventory Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
-        .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; position: relative; }
         
-        /* Logo pointer banaya taake aapko pata chale yahan click karna hai */
-        .logo { width: 140px; margin-bottom: 10px; cursor: pointer; }
+        /* Logo par click karke Admin Login khulega */
+        .logo { width: 140px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .logo:active { transform: scale(0.95); }
         
-        /* Admin Login ko shuru mein hide rakha hai */
-        #loginArea { display: none; margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 10px; }
+        /* Admin Login Area - By default hidden */
+        #loginArea { display: none; margin: 15px auto; padding: 15px; background: #f8f9fa; border-radius: 10px; max-width: 300px; border: 1px solid #ddd; }
         
         #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        input, select { width: 95%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
         
-        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
+        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; }
         .btn-main:hover { background: #1a252f; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
@@ -28,8 +29,8 @@
         .price { color: #e67e22; font-size: 20px; font-weight: bold; margin: 10px 0; }
         .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eee; align-self: flex-start; margin-bottom: 5px; }
         
-        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; transition: 0.2s; border: none; cursor: pointer; }
-        .btn-order:hover { background: #e03636; transform: scale(1.02); }
+        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; display: block; }
+        .btn-order:hover { background: #e03636; }
     </style>
 </head>
 <body>
@@ -39,8 +40,8 @@
         <h1>Product Showcase</h1>
         
         <div id="loginArea">
-            <input type="password" id="adminPass" placeholder="Admin Password" style="width: 200px; margin-right: 10px;">
-            <button class="btn-main" onclick="checkAdmin()" style="width: auto;">Login</button>
+            <input type="password" id="adminPass" placeholder="Enter Admin Pin">
+            <button class="btn-main" onclick="checkAdmin()" style="margin-top:5px;">Login</button>
         </div>
     </div>
 
@@ -58,7 +59,7 @@
     </div>
 
     <div class="grid" id="productGrid">
-        <p>Fetching amazing products for you...</p>
+        <p>Loading amazing products...</p>
     </div>
 
     <script>
@@ -66,19 +67,19 @@
 
         let allData = [];
 
-        // Logo click par login field dikhane ke liye
+        // Logo par click karne se login section toggle hoga
         function toggleLogin() {
-            const area = document.getElementById('loginArea');
-            area.style.display = (area.style.display === 'block') ? 'none' : 'block';
+            const loginArea = document.getElementById('loginArea');
+            loginArea.style.display = (loginArea.style.display === 'block') ? 'none' : 'block';
         }
 
         async function loadData() {
             try {
                 const res = await fetch(scriptURL);
                 allData = await res.json();
-                renderUI(false); // Shuru mein sirf Public products dikhayega
+                renderUI(false); // Default: Har kisi ko public products dikhenge
             } catch (e) {
-                document.getElementById('productGrid').innerHTML = "Something went wrong. Please refresh.";
+                document.getElementById('productGrid').innerHTML = "Unable to load products. Check internet or Script URL.";
             }
         }
 
@@ -87,6 +88,7 @@
             grid.innerHTML = '';
             
             allData.forEach(item => {
+                // Agar admin nahi hai, to hidden products mat dikhao
                 if(!isAdmin && item.Status !== 'Public') return;
 
                 const orderLink = item.ProductLink || item.Link || '#';
@@ -102,6 +104,18 @@
             });
         }
 
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "1234") { 
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('loginArea').style.display = 'none';
+                renderUI(true); // Admin ko hidden products bhi dikha do
+                alert("Admin Access Granted!");
+            } else {
+                alert("Incorrect Password!");
+            }
+        }
+
         async function addProduct() {
             const btn = document.getElementById('uploadBtn');
             const pName = document.getElementById('pName').value;
@@ -110,10 +124,7 @@
             const pLink = document.getElementById('pLink').value; 
             const pStatus = document.getElementById('pStatus').value;
 
-            if(!pName || !pPrice || !pImg || !pLink) { 
-                alert("Please fill ALL fields!"); 
-                return; 
-            }
+            if(!pName || !pPrice || !pImg || !pLink) { alert("Fill all fields!"); return; }
 
             btn.innerText = "Uploading...";
             btn.disabled = true;
@@ -125,20 +136,9 @@
                 alert("Product Added!");
                 location.reload();
             } catch (e) {
-                alert("Error! Check Script permissions.");
+                alert("Error while uploading.");
                 btn.disabled = false;
                 btn.innerText = "Upload to Sheet";
-            }
-        }
-
-        function checkAdmin() {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === "1234") { 
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('loginArea').style.display = 'none';
-                renderUI(true); // Admin ko hidden products bhi dikhenge
-            } else {
-                alert("Wrong Password!");
             }
         }
 
@@ -146,3 +146,4 @@
     </script>
 </body>
 </html>
+
