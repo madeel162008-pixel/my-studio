@@ -2,238 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AM STUDIO | Pro Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Smart Inventory</title>
     <style>
-        body { margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; text-align: center; }
-        .navbar { background: #111; padding: 15px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
-        .navbar a { color: #d4af37; text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: bold; text-transform: uppercase; }
-        .header { border-bottom: 2px solid #d4af37; padding: 30px 20px; margin-bottom: 30px; }
-        .logo { width: 150px; height: auto; margin-bottom: 10px; }
-        
-        #discount-bar { background: #d4af37; color: #000; padding: 10px; font-weight: bold; display: none; font-size: 14px; }
-
-        /* Voucher Section */
-        #voucher-section { display: none; padding: 20px; }
-        .voucher-container { display: flex; overflow-x: auto; justify-content: center; gap: 15px; }
-        .voucher-card { background: linear-gradient(135deg, #d4af37 0%, #f1d57e 100%); color: #000; padding: 15px; border-radius: 8px; min-width: 220px; position: relative; border-left: 5px dashed #000; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2); }
-        .voucher-card h4 { margin: 0; font-size: 18px; text-transform: uppercase; }
-        .copy-btn { background: #000; color: #fff; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; margin-top: 10px; font-weight: bold; }
-
-        .category-container { margin-bottom: 40px; padding: 0 20px; }
-        .cat-box { display: inline-block; border: 1px solid #333; padding: 15px; margin: 5px; width: 150px; background: #111; border-radius: 5px; font-size: 12px; letter-spacing: 1px; color: #d4af37; }
-        
-        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; position: relative; }
-        .image-box { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .img { width: 180px; height: 180px; object-fit: cover; border: 1px solid #444; background-color: #222; border-radius: 5px; }
-        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; transition: 0.3s; }
-        .btn:hover { background: #fff; transform: scale(1.05); }
-        
-        /* Admin Panel Styles */
-        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1a1a1a; padding: 25px; border: 3px solid #d4af37; border-radius: 15px; z-index: 1000; width: 85%; max-width: 500px; text-align: left; box-shadow: 0 0 50px rgba(212, 175, 55, 0.5); max-height: 90vh; overflow-y: auto; }
-        #admin-panel input, #admin-panel textarea { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
-        .stats-box { background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #d4af37; text-align: center; }
-        .delete-list-item { display: flex; justify-content: space-between; align-items: center; background: #222; padding: 10px; margin-bottom: 5px; border-radius: 4px; font-size: 12px; border: 1px solid #333; }
-        .del-x { color: #ff4444; cursor: pointer; font-weight: bold; background: #300; padding: 5px 10px; border-radius: 3px; }
-        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 15px; font-size: 16px; }
-        .close-btn { background: #ff4444; color: white; border: none; padding: 5px 10px; float: right; cursor: pointer; border-radius: 3px; }
-
-        .footer-section { background: #111; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
-        h2, h3 { color: #d4af37; margin-bottom: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
+        .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .logo { width: 140px; margin-bottom: 10px; }
+        #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        input, select { width: 95%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .btn-main:hover { background: #1a252f; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: left; }
+        .card:hover { transform: translateY(-5px); }
+        .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
+        .price { color: #e67e22; font-size: 20px; font-weight: bold; }
+        .status-tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; float: right; background: #eee; }
     </style>
 </head>
 <body>
 
-    <div id="discount-bar">OFFER: LOADING...</div>
-
-    <div class="navbar">
-        <a href="#products">Products</a>
-        <a href="#about">About Us</a>
-        <a href="https://wa.me/923172722004">Contact</a>
-    </div>
-
     <div class="header">
-        <img src="https://i.postimg.cc/tJQHGLdb/ei-1771101710052-removebg-preview.png" alt="AM STUDIO Logo" class="logo">
-        <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
-    </div>
-
-    <div id="voucher-section">
-        <h3>AVAILABLE VOUCHERS</h3>
-        <div class="voucher-container" id="live-vouchers"></div>
-    </div>
-
-    <div id="admin-panel">
-        <button class="close-btn" onclick="toggleAdmin()">CLOSE</button>
-        <h3>ADMIN DASHBOARD</h3>
-        
-        <div class="stats-box">
-            <span style="font-size: 14px; color: #aaa;">TOTAL VISITS</span><br>
-            <span id="visit-count" style="font-size: 32px; font-weight: bold; color: #d4af37;">0</span>
-        </div>
-
-        <p style="font-size: 12px; color: #d4af37; border-bottom: 1px solid #333;">1. MANAGE ADDED PRODUCTS:</p>
-        <div id="delete-manager" style="max-height: 120px; overflow-y: auto; margin-bottom: 15px;"></div>
-
-        <p style="font-size: 12px; color: #d4af37; border-bottom: 1px solid #333;">2. ADD NEW PRODUCT:</p>
-        <input type="text" id="p-name" placeholder="Product Name">
-        <input type="text" id="p-img" placeholder="Image Link (Direct)">
-        <input type="text" id="p-price" placeholder="Price (PKR)">
-        <input type="text" id="p-link" placeholder="AliExpress/Order Link">
-        <textarea id="p-desc" placeholder="Category & Short Description"></textarea>
-
-        <p style="font-size: 12px; color: #d4af37; border-bottom: 1px solid #333;">3. OFFERS & VOUCHERS:</p>
-        <input type="text" id="bar-text" placeholder="Promo Bar Text (Top Bar)">
-        <input type="text" id="v-name" placeholder="Voucher Name (e.g. RS. 300 OFF)">
-        <input type="text" id="v-code" placeholder="Voucher Code (e.g. AM300)">
-        
-        <button class="save-btn" onclick="saveData()">PUBLISH CHANGES</button>
-    </div>
-
-    <div class="category-container">
-        <div class="cat-box">HOME DECOR</div>
-        <div class="cat-box">FASHION</div>
-        <div class="cat-box">SMART TECH</div>
-    </div>
-
-    <div id="products">
-        <div id="dynamic-products"></div>
-
-        <div class="product-card">
-            <h2>3D BRICK WALLPAPER</h2>
-            <div class="image-box"><img src="https://i.postimg.cc/NMqvX3yg/IMG-20260215-WA0002.jpg" class="img"></div>
-            <p>Home Decor | Premium quality, waterproof 3D stickers.</p>
-            <a href="https://s.click.aliexpress.com/e/_c3s95YQb" target="_blank" class="btn">ORDER NOW</a>
+        <img src="https://i.postimg.cc/CLbXCCP1/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo">
+        <h1>Live Product Management</h1>
+        <div style="margin-top: 15px;">
+            <input type="password" id="adminPass" placeholder="Admin Password" style="width: 200px; margin-right: 10px;">
+            <button class="btn-main" onclick="checkAdmin()">Admin Login</button>
         </div>
     </div>
 
-    <div class="footer-section">
-        <h3>ABOUT AM STUDIO</h3>
-        <p style="color: #aaa; font-size: 14px; max-width: 600px; margin: 0 auto 30px;">Premium quality and style at your doorstep. We bring the best lifestyle products to Karachi and beyond.</p>
-        <p id="admin-trigger" onclick="handleMobileLogin()" style="font-size: 11px; cursor: pointer; color: #333;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
+    <div id="adminPanel">
+        <h2 style="margin-top:0;">Add New Product</h2>
+        <input type="text" id="pName" placeholder="Product Name">
+        <input type="text" id="pPrice" placeholder="Price">
+        <input type="text" id="pImg" placeholder="Direct Image Link (.jpg)">
+        <select id="pStatus">
+            <option value="Public">Public</option>
+            <option value="Hidden">Hidden</option>
+        </select>
+        <button class="btn-main" id="uploadBtn" onclick="addProduct()" style="width: 100%;">Upload to Sheet</button>
+    </div>
+
+    <div class="grid" id="productGrid">
+        <p>Loading your products...</p>
     </div>
 
     <script>
-        // VISITS COUNTER
-        let visits = localStorage.getItem('visitCount') || 0;
-        visits++;
-        localStorage.setItem('visitCount', visits);
-        document.getElementById('visit-count').innerText = visits;
+        // Line 53: Aapki Web App URL yahan set kar di gayi hai
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyoA5RUM7_QpwgWA_rBu6boO8KOediiIIZ8Z6BdtG_1Gu9s76pOEeM5O3YpYfhyc2-S/exec'; 
 
-        let productArray = JSON.parse(localStorage.getItem('productArray')) || [];
+        let allData = [];
 
-        window.onload = function() {
-            // Load Promo Bar
-            if(localStorage.getItem('barText')) {
-                document.getElementById('discount-bar').innerText = localStorage.getItem('barText');
-                document.getElementById('discount-bar').style.display = 'block';
+        async function loadData() {
+            try {
+                const res = await fetch(scriptURL);
+                allData = await res.json();
+                renderUI(false);
+            } catch (e) {
+                document.getElementById('productGrid').innerHTML = "Connection Error. Check your Script deployment.";
             }
-            // Load Voucher
-            if(localStorage.getItem('vName')) {
-                renderVoucher(localStorage.getItem('vName'), localStorage.getItem('vCode'));
-            }
-            renderProducts();
-        };
+        }
 
-        function renderProducts() {
-            let container = document.getElementById('dynamic-products');
-            let deleteManager = document.getElementById('delete-manager');
-            container.innerHTML = "";
-            deleteManager.innerHTML = "";
-
-            productArray.forEach((p, index) => {
-                container.innerHTML += `
-                    <div class="product-card">
-                        <h2>${p.name}</h2>
-                        <div class="image-box"><img src="${p.img}" class="img"></div>
-                        <p>${p.desc} | <b>PKR ${p.price}</b></p>
-                        <a href="${p.link}" target="_blank" class="btn">ORDER NOW</a>
-                    </div>`;
-                
-                deleteManager.innerHTML += `
-                    <div class="delete-list-item">
-                        <span>${p.name}</span>
-                        <span class="del-x" onclick="deleteProduct(${index})">DELETE</span>
+        function renderUI(isAdmin) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            allData.forEach(item => {
+                if(!isAdmin && item.Status !== 'Public') return;
+                grid.innerHTML += `
+                    <div class="card">
+                        <img src="${item.ImageURL}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200'">
+                        <span class="status-tag">${item.Status}</span>
+                        <h3>${item.ProductName}</h3>
+                        <p class="price">${item.Price}</p>
                     </div>`;
             });
         }
 
-        function deleteProduct(index) {
-            if(confirm("Confirm: Delete this product?")) {
-                productArray.splice(index, 1);
-                localStorage.setItem('productArray', JSON.stringify(productArray));
-                renderProducts();
+        async function addProduct() {
+            const btn = document.getElementById('uploadBtn');
+            const newProduct = {
+                name: document.getElementById('pName').value,
+                price: document.getElementById('pPrice').value,
+                image: document.getElementById('pImg').value,
+                status: document.getElementById('pStatus').value
+            };
+            if(!newProduct.name || !newProduct.price || !newProduct.image) { alert("Please fill all fields!"); return; }
+            btn.innerText = "Uploading...";
+            try {
+                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(newProduct) });
+                alert("Product Added Successfully!");
+                location.reload();
+            } catch(e) {
+                alert("Error! Make sure you deployed as 'Anyone'.");
+                btn.innerText = "Upload to Sheet";
             }
         }
 
-        function renderVoucher(name, code) {
-            document.getElementById('live-vouchers').innerHTML = `
-                <div class="voucher-card">
-                    <h4>${name}</h4>
-                    <p>CODE: ${code}</p>
-                    <button class="copy-btn" onclick="copyCode('${code}')">COPY CODE</button>
-                </div>`;
-            document.getElementById('voucher-section').style.display = 'block';
+        function checkAdmin() {
+            if(document.getElementById('adminPass').value === "1234") {
+                document.getElementById('adminPanel').style.display = 'block';
+                renderUI(true);
+                alert("Admin Access Granted!");
+            } else { alert("Wrong Password!"); }
         }
 
-        function copyCode(code) {
-            navigator.clipboard.writeText(code);
-            alert("Voucher Copied: " + code);
-        }
-
-        // LOGIN SYSTEM
-        document.addEventListener('keydown', function(e) { if (e.key.toLowerCase() === 'l') { login(); } });
-        let clickCount = 0;
-        function handleMobileLogin() {
-            clickCount++;
-            if (clickCount === 3) { clickCount = 0; login(); }
-            setTimeout(() => { clickCount = 0; }, 2000);
-        }
-
-        function login() {
-            let pw = prompt("Admin Password:");
-            if (pw === "admin123") { toggleAdmin(); }
-        }
-
-        function toggleAdmin() {
-            let panel = document.getElementById('admin-panel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function saveData() {
-            // Save Bar & Voucher
-            let bar = document.getElementById('bar-text').value;
-            if(bar) {
-                localStorage.setItem('barText', bar);
-                document.getElementById('discount-bar').innerText = bar;
-                document.getElementById('discount-bar').style.display = 'block';
-            }
-
-            let vName = document.getElementById('v-name').value;
-            let vCode = document.getElementById('v-code').value;
-            if(vName && vCode) {
-                localStorage.setItem('vName', vName);
-                localStorage.setItem('vCode', vCode);
-                renderVoucher(vName, vCode);
-            }
-
-            // Add Product
-            let name = document.getElementById('p-name').value;
-            let img = document.getElementById('p-img').value;
-            let price = document.getElementById('p-price').value;
-            let link = document.getElementById('p-link').value;
-            let desc = document.getElementById('p-desc').value;
-
-            if(name && img) {
-                productArray.unshift({ name, img, price, link, desc });
-                localStorage.setItem('productArray', JSON.stringify(productArray));
-                renderProducts();
-                // Reset fields
-                document.getElementById('p-name').value = "";
-                document.getElementById('p-img').value = "";
-            }
-            
-            alert("Success! Changes are live.");
-            toggleAdmin();
-        }
+        window.onload = loadData;
     </script>
 </body>
 </html>
