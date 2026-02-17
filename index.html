@@ -13,12 +13,16 @@
         #discount-bar { background: #d4af37; color: #000; padding: 10px; font-weight: bold; display: block; font-size: 14px; }
         .category-container { margin-bottom: 40px; padding: 0 20px; }
         .cat-box { display: inline-block; border: 1px solid #333; padding: 15px; margin: 5px; width: 150px; background: #111; border-radius: 5px; font-size: 12px; letter-spacing: 1px; color: #d4af37; }
-        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; }
+        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; position: relative; }
         .img { width: 100%; max-width: 400px; height: auto; border-radius: 5px; border: 1px solid #444; }
-        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; }
+        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; border:none; cursor:pointer; }
+        
+        /* Admin specific buttons on cards */
+        .admin-edit-btn { position: absolute; top: 10px; right: 10px; background: #25D366; color: white; padding: 5px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; display: none; border: none; }
+
         #admin-panel { display: none; background: #1a1a1a; padding: 25px; border: 3px solid #d4af37; border-radius: 15px; margin: 20px auto; max-width: 500px; text-align: left; }
         #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; }
-        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; cursor: pointer; }
+        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; cursor: pointer; font-weight: bold; }
         .footer-section { background: #111; padding: 40px 20px; border-top: 1px solid #333; }
     </style>
 </head>
@@ -37,10 +41,10 @@
     </div>
 
     <div id="admin-panel">
-        <h3>ADMIN DASHBOARD</h3>
+        <h3 id="panel-title">ADMIN DASHBOARD (ADD)</h3>
         <input type="password" id="adminPass" placeholder="Enter Admin Pin">
         <hr>
-        <input type="text" id="p-name" placeholder="Product Name">
+        <input type="hidden" id="edit-index"> <input type="text" id="p-name" placeholder="Product Name">
         <input type="text" id="p-price" placeholder="Price (PKR)">
         <input type="text" id="p-img" placeholder="Image Link (Direct)">
         <input type="text" id="p-link" placeholder="Order Link">
@@ -49,6 +53,7 @@
             <option value="Hidden">Hidden</option>
         </select>
         <button class="save-btn" id="uploadBtn" onclick="addProduct()">PUBLISH TO SHEET</button>
+        <button id="cancel-edit" style="display:none; background:#555; width:100%; margin-top:10px; padding:10px; color:white; border:none; cursor:pointer;" onclick="resetForm()">Cancel Edit</button>
     </div>
 
     <div class="category-container">
@@ -67,8 +72,9 @@
     </div>
 
     <script>
-        // Nayi Script URL Update ho gayi hai
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec'; 
+        let globalData = [];
+        let isAdminLoggedIn = false;
 
         function toggleAdmin() {
             let panel = document.getElementById('admin-panel');
@@ -78,12 +84,11 @@
         async function loadData() {
             try {
                 const response = await fetch(scriptURL);
-                if (!response.ok) throw new Error('Network response was not ok');
                 const allData = await response.json();
+                globalData = allData;
                 renderUI(allData);
             } catch (error) {
-                console.error('Fetch error:', error);
-                document.getElementById('dynamic-products').innerHTML = "Failed to load products. Check Script Permissions (Anyone).";
+                document.getElementById('dynamic-products').innerHTML = "Failed to load products.";
             }
         }
 
@@ -91,27 +96,56 @@
             let container = document.getElementById('dynamic-products');
             container.innerHTML = "";
             
-            if (!data || data.length === 0) {
-                container.innerHTML = "No products found in Google Sheet.";
-                return;
-            }
-
-            data.forEach(item => {
-                if(item.Status !== 'Public') return;
+            data.forEach((item, index) => {
+                // Admin login ke baad Hidden products bhi dikhayi denge edit ke liye
+                if(!isAdminLoggedIn && item.Status !== 'Public') return;
 
                 container.innerHTML += `
                     <div class="product-card">
+                        <button class="admin-edit-btn" style="display:${isAdminLoggedIn ? 'block' : 'none'}" onclick="setupEdit(${index})">EDIT</button>
                         <h2 style="color: #d4af37;">${item.ProductName}</h2>
                         <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
-                        <p>PKR ${item.Price}</p>
+                        <p>PKR ${item.Price} ${item.Status === 'Hidden' ? '<span style="color:red;">(Hidden)</span>' : ''}</p>
                         <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
                     </div>`;
             });
         }
 
+        function setupEdit(index) {
+            const item = globalData[index];
+            document.getElementById('panel-title').innerText = "EDITING PRODUCT";
+            document.getElementById('p-name').value = item.ProductName;
+            document.getElementById('p-price').value = item.Price;
+            document.getElementById('p-img').value = item.ImageURL;
+            document.getElementById('p-link').value = item.ProductLink;
+            document.getElementById('p-status').value = item.Status;
+            document.getElementById('edit-index').value = index + 2; // Sheet row matches (Header + index start at 0)
+            
+            document.getElementById('uploadBtn').innerText = "UPDATE PRODUCT";
+            document.getElementById('cancel-edit').style.display = "block";
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function resetForm() {
+            document.getElementById('panel-title').innerText = "ADMIN DASHBOARD (ADD)";
+            document.getElementById('p-name').value = "";
+            document.getElementById('p-price').value = "";
+            document.getElementById('p-img').value = "";
+            document.getElementById('p-link').value = "";
+            document.getElementById('edit-index').value = "";
+            document.getElementById('uploadBtn').innerText = "PUBLISH TO SHEET";
+            document.getElementById('cancel-edit').style.display = "none";
+        }
+
         async function addProduct() {
             const pass = document.getElementById('adminPass').value;
-            if(pass !== "1234") { alert("Wrong Pin!"); return; }
+            if(pass !== "1234") { 
+                alert("Wrong Pin! Login properly to Edit/Add."); 
+                return; 
+            } else {
+                isAdminLoggedIn = true;
+                renderUI(globalData); // Refresh UI to show edit buttons
+            }
 
             const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
@@ -119,24 +153,24 @@
             const img = document.getElementById('p-img').value;
             const link = document.getElementById('p-link').value;
             const status = document.getElementById('p-status').value;
+            const editRow = document.getElementById('edit-index').value;
 
-            if(!name || !price || !img) { alert("Please fill all fields!"); return; }
+            if(!name || !price || !img) { alert("Fill all fields!"); return; }
 
-            btn.innerText = "Publishing...";
+            btn.innerText = "Processing...";
             btn.disabled = true;
 
-            const newProduct = { name, price, image: img, link, status };
+            const payload = { 
+                name, price, image: img, link, status,
+                action: editRow ? "edit" : "add",
+                row: editRow
+            };
 
             try {
-                await fetch(scriptURL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(newProduct)
-                });
-                alert("Product Added Successfully!");
+                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
+                alert(editRow ? "Product Updated!" : "Product Added!");
                 location.reload();
             } catch (e) {
-                console.error('Post error:', e);
-                alert("Success! (Redirect handled)");
                 location.reload();
             }
         }
@@ -145,6 +179,7 @@
     </script>
 </body>
 </html>
+
 
 
 
