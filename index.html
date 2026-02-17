@@ -18,8 +18,8 @@
         .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
         .price { color: #e67e22; font-size: 20px; font-weight: bold; margin: 10px 0; }
         .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eee; align-self: flex-start; margin-bottom: 5px; }
-        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; transition: 0.2s; }
-        .btn-order:hover { background: #e03636; }
+        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-order:hover { background: #e03636; transform: scale(1.02); }
     </style>
 </head>
 <body>
@@ -51,8 +51,8 @@
     </div>
 
     <script>
-        // Updated Script URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzXUN6WHInTNwdhJ0v_fV1zGCj_YqE_Y9oe2ggbuiU9BES6wJLS4iwV-k7fh4WouAOORA/exec'; 
+        // NEW UPDATED SCRIPT URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxcnwoQYT1FbhmVAZr1_IP2dQJPOz6KzklD0h2licXBBv44lQLHRqtiqXK-u_xNY6Oh9A/exec'; 
 
         let allData = [];
 
@@ -62,7 +62,7 @@
                 allData = await res.json();
                 renderUI(false);
             } catch (e) {
-                document.getElementById('productGrid').innerHTML = "Connection Error. Make sure your Script is deployed correctly.";
+                document.getElementById('productGrid').innerHTML = "Connection Error. Please check script permissions and URL.";
             }
         }
 
@@ -73,8 +73,8 @@
             allData.forEach(item => {
                 if(!isAdmin && item.Status !== 'Public') return;
 
-                // Checking for Link in your sheet column
-                const orderLink = item.ProductLink || '#';
+                // Checking for ProductLink from your sheet
+                const orderLink = item.ProductLink || item.Link || '#';
 
                 grid.innerHTML += `
                     <div class="card">
@@ -95,7 +95,10 @@
             const pLink = document.getElementById('pLink').value; 
             const pStatus = document.getElementById('pStatus').value;
 
-            if(!pName || !pPrice || !pImg || !pLink) { alert("Please fill ALL fields including the link!"); return; }
+            if(!pName || !pPrice || !pImg || !pLink) { 
+                alert("Please fill ALL fields, especially the AliExpress link!"); 
+                return; 
+            }
 
             btn.innerText = "Uploading...";
             btn.disabled = true;
@@ -113,7 +116,7 @@
                 alert("Product Added Successfully!");
                 location.reload();
             } catch (e) {
-                alert("Error! Check Script permissions.");
+                alert("Error! Check your Google Script permissions (set to 'Anyone').");
                 btn.disabled = false;
                 btn.innerText = "Upload to Sheet";
             }
@@ -124,6 +127,7 @@
             if(pass === "1234") { 
                 document.getElementById('adminPanel').style.display = 'block';
                 renderUI(true);
+                alert("Logged in as Admin!");
             } else {
                 alert("Incorrect Password!");
             }
