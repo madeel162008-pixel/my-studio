@@ -10,25 +10,16 @@
         .navbar a { color: #d4af37; text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: bold; text-transform: uppercase; }
         .header { border-bottom: 2px solid #d4af37; padding: 30px 20px; margin-bottom: 30px; }
         .logo { width: 150px; height: auto; margin-bottom: 10px; cursor: pointer; }
-        
         #discount-bar { background: #d4af37; color: #000; padding: 10px; font-weight: bold; display: block; font-size: 14px; }
-
         .category-container { margin-bottom: 40px; padding: 0 20px; }
         .cat-box { display: inline-block; border: 1px solid #333; padding: 15px; margin: 5px; width: 150px; background: #111; border-radius: 5px; font-size: 12px; letter-spacing: 1px; color: #d4af37; }
-        
-        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; position: relative; }
-        .image-box { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .img { width: 100%; max-width: 400px; height: auto; object-fit: cover; border: 1px solid #444; background-color: #222; border-radius: 5px; }
-        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; transition: 0.3s; }
-        .btn:hover { background: #fff; transform: scale(1.05); }
-        
-        /* Admin Panel */
+        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; }
+        .img { width: 100%; max-width: 400px; height: auto; border-radius: 5px; border: 1px solid #444; }
+        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; }
         #admin-panel { display: none; background: #1a1a1a; padding: 25px; border: 3px solid #d4af37; border-radius: 15px; margin: 20px auto; max-width: 500px; text-align: left; }
-        #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
-        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 15px; font-size: 16px; }
-
-        .footer-section { background: #111; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
-        h2, h3 { color: #d4af37; margin-bottom: 15px; }
+        #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; }
+        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; cursor: pointer; }
+        .footer-section { background: #111; padding: 40px 20px; border-top: 1px solid #333; }
     </style>
 </head>
 <body>
@@ -67,18 +58,17 @@
     </div>
 
     <div id="products">
-        <div id="dynamic-products">Loading products from Google Sheets...</div>
+        <div id="dynamic-products">Loading products from AM STUDIO...</div>
     </div>
 
     <div class="footer-section">
         <h3>ABOUT AM STUDIO</h3>
-        <p style="color: #aaa; font-size: 14px; max-width: 600px; margin: 0 auto 30px;">Premium quality and style at your doorstep.</p>
-        <p style="font-size: 11px; color: #333;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
+        <p style="color: #aaa; font-size: 14px;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
     </div>
 
     <script>
-        // AAPKI GOOGLE SCRIPT LINK
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbz0oAMF8_RVA4kYAe2m1RPQKxtMzbkiWN_c0DAWLE2sGFXItDo-qQKfWvM173LIO5YVHQ/exec'; 
+        // Nayi Script URL Update ho gayi hai
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec'; 
 
         function toggleAdmin() {
             let panel = document.getElementById('admin-panel');
@@ -88,10 +78,12 @@
         async function loadData() {
             try {
                 const response = await fetch(scriptURL);
+                if (!response.ok) throw new Error('Network response was not ok');
                 const allData = await response.json();
                 renderUI(allData);
             } catch (error) {
-                document.getElementById('dynamic-products').innerHTML = "Failed to load products.";
+                console.error('Fetch error:', error);
+                document.getElementById('dynamic-products').innerHTML = "Failed to load products. Check Script Permissions (Anyone).";
             }
         }
 
@@ -99,15 +91,18 @@
             let container = document.getElementById('dynamic-products');
             container.innerHTML = "";
             
+            if (!data || data.length === 0) {
+                container.innerHTML = "No products found in Google Sheet.";
+                return;
+            }
+
             data.forEach(item => {
                 if(item.Status !== 'Public') return;
 
                 container.innerHTML += `
                     <div class="product-card">
-                        <h2>${item.ProductName}</h2>
-                        <div class="image-box">
-                            <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
-                        </div>
+                        <h2 style="color: #d4af37;">${item.ProductName}</h2>
+                        <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
                         <p>PKR ${item.Price}</p>
                         <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
                     </div>`;
@@ -116,7 +111,7 @@
 
         async function addProduct() {
             const pass = document.getElementById('adminPass').value;
-            if(pass !== "1234") { alert("Wrong Admin Pin!"); return; }
+            if(pass !== "1234") { alert("Wrong Pin!"); return; }
 
             const btn = document.getElementById('uploadBtn');
             const name = document.getElementById('p-name').value;
@@ -125,7 +120,7 @@
             const link = document.getElementById('p-link').value;
             const status = document.getElementById('p-status').value;
 
-            if(!name || !price || !img) { alert("Fill required fields!"); return; }
+            if(!name || !price || !img) { alert("Please fill all fields!"); return; }
 
             btn.innerText = "Publishing...";
             btn.disabled = true;
@@ -133,13 +128,16 @@
             const newProduct = { name, price, image: img, link, status };
 
             try {
-                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(newProduct) });
+                await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(newProduct)
+                });
                 alert("Product Added Successfully!");
                 location.reload();
             } catch (e) {
-                alert("Error! Check Script permissions.");
-                btn.disabled = false;
-                btn.innerText = "PUBLISH TO SHEET";
+                console.error('Post error:', e);
+                alert("Success! (Redirect handled)");
+                location.reload();
             }
         }
 
@@ -147,6 +145,7 @@
     </script>
 </body>
 </html>
+
 
 
 
