@@ -7,17 +7,27 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
         .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        .logo { width: 140px; margin-bottom: 10px; }
+        
+        /* Logo pointer banaya taake aapko pata chale yahan click karna hai */
+        .logo { width: 140px; margin-bottom: 10px; cursor: pointer; }
+        
+        /* Admin Login ko shuru mein hide rakha hai */
+        #loginArea { display: none; margin-top: 15px; background: #f9f9f9; padding: 10px; border-radius: 10px; }
+        
         #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         input, select { width: 95%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+        
         .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
         .btn-main:hover { background: #1a252f; }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
         .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: left; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-5px); }
+        
         .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
         .price { color: #e67e22; font-size: 20px; font-weight: bold; margin: 10px 0; }
         .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eee; align-self: flex-start; margin-bottom: 5px; }
+        
         .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; transition: 0.2s; border: none; cursor: pointer; }
         .btn-order:hover { background: #e03636; transform: scale(1.02); }
     </style>
@@ -25,11 +35,12 @@
 <body>
 
     <div class="header">
-        <img src="https://i.postimg.cc/CLbXCCP1/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo">
-        <h1>Live Product Management</h1>
-        <div style="margin-top: 15px;">
+        <img src="https://i.postimg.cc/CLbXCCP1/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleLogin()">
+        <h1>Product Showcase</h1>
+        
+        <div id="loginArea">
             <input type="password" id="adminPass" placeholder="Admin Password" style="width: 200px; margin-right: 10px;">
-            <button class="btn-main" onclick="checkAdmin()" style="width: auto;">Admin Login</button>
+            <button class="btn-main" onclick="checkAdmin()" style="width: auto;">Login</button>
         </div>
     </div>
 
@@ -47,22 +58,27 @@
     </div>
 
     <div class="grid" id="productGrid">
-        <p>Loading products from Google Sheets...</p>
+        <p>Fetching amazing products for you...</p>
     </div>
 
     <script>
-        // NEW UPDATED SCRIPT URL
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxcnwoQYT1FbhmVAZr1_IP2dQJPOz6KzklD0h2licXBBv44lQLHRqtiqXK-u_xNY6Oh9A/exec'; 
 
         let allData = [];
+
+        // Logo click par login field dikhane ke liye
+        function toggleLogin() {
+            const area = document.getElementById('loginArea');
+            area.style.display = (area.style.display === 'block') ? 'none' : 'block';
+        }
 
         async function loadData() {
             try {
                 const res = await fetch(scriptURL);
                 allData = await res.json();
-                renderUI(false);
+                renderUI(false); // Shuru mein sirf Public products dikhayega
             } catch (e) {
-                document.getElementById('productGrid').innerHTML = "Connection Error. Please check script permissions and URL.";
+                document.getElementById('productGrid').innerHTML = "Something went wrong. Please refresh.";
             }
         }
 
@@ -73,12 +89,11 @@
             allData.forEach(item => {
                 if(!isAdmin && item.Status !== 'Public') return;
 
-                // Checking for ProductLink from your sheet
                 const orderLink = item.ProductLink || item.Link || '#';
 
                 grid.innerHTML += `
                     <div class="card">
-                        <span class="status-tag">${item.Status}</span>
+                        ${isAdmin ? <span class="status-tag">${item.Status}</span> : ''}
                         <img src="${item.ImageURL}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
                         <h3 style="margin:0; font-size: 18px;">${item.ProductName}</h3>
                         <p class="price">${item.Price}</p>
@@ -96,27 +111,21 @@
             const pStatus = document.getElementById('pStatus').value;
 
             if(!pName || !pPrice || !pImg || !pLink) { 
-                alert("Please fill ALL fields, especially the AliExpress link!"); 
+                alert("Please fill ALL fields!"); 
                 return; 
             }
 
             btn.innerText = "Uploading...";
             btn.disabled = true;
 
-            const newProduct = { 
-                name: pName, 
-                price: pPrice, 
-                image: pImg, 
-                link: pLink, 
-                status: pStatus 
-            };
+            const newProduct = { name: pName, price: pPrice, image: pImg, link: pLink, status: pStatus };
 
             try {
                 await fetch(scriptURL, { method: 'POST', body: JSON.stringify(newProduct) });
-                alert("Product Added Successfully!");
+                alert("Product Added!");
                 location.reload();
             } catch (e) {
-                alert("Error! Check your Google Script permissions (set to 'Anyone').");
+                alert("Error! Check Script permissions.");
                 btn.disabled = false;
                 btn.innerText = "Upload to Sheet";
             }
@@ -126,10 +135,10 @@
             const pass = document.getElementById('adminPass').value;
             if(pass === "1234") { 
                 document.getElementById('adminPanel').style.display = 'block';
-                renderUI(true);
-                alert("Logged in as Admin!");
+                document.getElementById('loginArea').style.display = 'none';
+                renderUI(true); // Admin ko hidden products bhi dikhenge
             } else {
-                alert("Incorrect Password!");
+                alert("Wrong Password!");
             }
         }
 
