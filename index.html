@@ -3,146 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Live Inventory Dashboard</title>
+    <title>AM STUDIO | Pro Dashboard</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
-        .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
-        .logo { width: 140px; margin-bottom: 10px; cursor: pointer; }
+        body { margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; text-align: center; }
+        .navbar { background: #111; padding: 15px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
+        .navbar a { color: #d4af37; text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: bold; text-transform: uppercase; }
+        .header { border-bottom: 2px solid #d4af37; padding: 30px 20px; margin-bottom: 30px; }
+        .logo { width: 150px; height: auto; margin-bottom: 10px; cursor: pointer; }
         
-        #loginArea { display: none; margin: 15px auto; padding: 15px; background: #f8f9fa; border-radius: 10px; max-width: 300px; border: 1px solid #ddd; }
-        #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        #discount-bar { background: #d4af37; color: #000; padding: 10px; font-weight: bold; display: block; font-size: 14px; }
+
+        .category-container { margin-bottom: 40px; padding: 0 20px; }
+        .cat-box { display: inline-block; border: 1px solid #333; padding: 15px; margin: 5px; width: 150px; background: #111; border-radius: 5px; font-size: 12px; letter-spacing: 1px; color: #d4af37; }
         
-        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; width: 100%; }
+        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; position: relative; }
+        .image-box { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .img { width: 100%; max-width: 400px; height: auto; object-fit: cover; border: 1px solid #444; background-color: #222; border-radius: 5px; }
+        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; transition: 0.3s; }
+        .btn:hover { background: #fff; transform: scale(1.05); }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: left; display: flex; flex-direction: column; min-height: 400px; }
-        .card:hover { transform: translateY(-5px); }
-        
-        .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
-        .price { color: #e67e22; font-size: 20px; font-weight: bold; margin: 10px 0; }
-        .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eee; align-self: flex-start; margin-bottom: 5px; }
-        
-        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; display: block; }
-        .btn-order:hover { background: #e03636; }
+        /* Admin Panel */
+        #admin-panel { display: none; background: #1a1a1a; padding: 25px; border: 3px solid #d4af37; border-radius: 15px; margin: 20px auto; max-width: 500px; text-align: left; }
+        #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px; box-sizing: border-box; }
+        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 15px; font-size: 16px; }
+
+        .footer-section { background: #111; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
+        h2, h3 { color: #d4af37; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="https://i.postimg.cc/CLbXCCP1/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleLogin()">
-        <h1>Product Showcase</h1>
-        
-        <div id="loginArea">
-            <input type="password" id="adminPass" placeholder="Enter Admin Pin">
-            <button class="btn-main" onclick="checkAdmin()">Login</button>
-        </div>
+    <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS - AM STUDIO</div>
+
+    <div class="navbar">
+        <a href="#products">Products</a>
+        <a href="https://wa.me/923172722004">Contact</a>
     </div>
 
-    <div id="adminPanel">
-        <h2 style="margin-top:0;">Add New Product</h2>
-        <input type="text" id="pName" placeholder="Product Name">
-        <input type="text" id="pPrice" placeholder="Price (e.g. 1500 Rs)">
-        <input type="text" id="pImg" placeholder="Direct Image Link (.jpg)">
-        <input type="text" id="pLink" placeholder="AliExpress Product Link">
-        <select id="pStatus">
+    <div class="header">
+        <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleAdmin()">
+        <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
+    </div>
+
+    <div id="admin-panel">
+        <h3>ADMIN DASHBOARD</h3>
+        <input type="password" id="adminPass" placeholder="Enter Admin Pin">
+        <hr>
+        <input type="text" id="p-name" placeholder="Product Name">
+        <input type="text" id="p-price" placeholder="Price (PKR)">
+        <input type="text" id="p-img" placeholder="Image Link (Direct)">
+        <input type="text" id="p-link" placeholder="Order Link">
+        <select id="p-status">
             <option value="Public">Public</option>
             <option value="Hidden">Hidden</option>
         </select>
-        <button class="btn-main" id="uploadBtn" onclick="addProduct()">Upload to Sheet</button>
+        <button class="save-btn" id="uploadBtn" onclick="addProduct()">PUBLISH TO SHEET</button>
     </div>
 
-    <div class="grid" id="productGrid">
-        <p>Loading products...</p>
+    <div class="category-container">
+        <div class="cat-box">HOME DECOR</div>
+        <div class="cat-box">FASHION</div>
+        <div class="cat-box">SMART TECH</div>
+    </div>
+
+    <div id="products">
+        <div id="dynamic-products">Loading products from Google Sheets...</div>
+    </div>
+
+    <div class="footer-section">
+        <h3>ABOUT AM STUDIO</h3>
+        <p style="color: #aaa; font-size: 14px; max-width: 600px; margin: 0 auto 30px;">Premium quality and style at your doorstep.</p>
+        <p style="font-size: 11px; color: #333;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
     </div>
 
     <script>
-        // UPDATED SCRIPT URL
+        // AAPKI GOOGLE SCRIPT LINK
         const scriptURL = 'https://script.google.com/macros/s/AKfycbz0oAMF8_RVA4kYAe2m1RPQKxtMzbkiWN_c0DAWLE2sGFXItDo-qQKfWvM173LIO5YVHQ/exec'; 
 
-        let allData = [];
-
-        function toggleLogin() {
-            const loginArea = document.getElementById('loginArea');
-            loginArea.style.display = (loginArea.style.display === 'block') ? 'none' : 'block';
+        function toggleAdmin() {
+            let panel = document.getElementById('admin-panel');
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         }
 
         async function loadData() {
             try {
                 const response = await fetch(scriptURL);
-                allData = await response.json();
-                renderUI(false); 
+                const allData = await response.json();
+                renderUI(allData);
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('productGrid').innerHTML = "Failed to load. Make sure the Script is deployed as 'Anyone'.";
+                document.getElementById('dynamic-products').innerHTML = "Failed to load products.";
             }
         }
 
-        function renderUI(isAdmin) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = '';
+        function renderUI(data) {
+            let container = document.getElementById('dynamic-products');
+            container.innerHTML = "";
             
-            if (allData.length === 0) {
-                grid.innerHTML = "<p>No products found. Please add some via Admin panel.</p>";
-                return;
-            }
+            data.forEach(item => {
+                if(item.Status !== 'Public') return;
 
-            allData.forEach(item => {
-                if(!isAdmin && item.Status !== 'Public') return;
-
-                const orderLink = item.ProductLink || item.Link || '#';
-
-                grid.innerHTML += `
-                    <div class="card">
-                        ${isAdmin ? <span class="status-tag">${item.Status}</span> : ''}
-                        <img src="${item.ImageURL}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-                        <h3 style="margin:0;">${item.ProductName}</h3>
-                        <p class="price">${item.Price}</p>
-                        <a href="${orderLink}" target="_blank" class="btn-order">Order Now</a>
+                container.innerHTML += `
+                    <div class="product-card">
+                        <h2>${item.ProductName}</h2>
+                        <div class="image-box">
+                            <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
+                        </div>
+                        <p>PKR ${item.Price}</p>
+                        <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
                     </div>`;
             });
         }
 
-        function checkAdmin() {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === "1234") { 
-                document.getElementById('adminPanel').style.display = 'block';
-                document.getElementById('loginArea').style.display = 'none';
-                renderUI(true);
-            } else {
-                alert("Wrong Password!");
-            }
-        }
-
         async function addProduct() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass !== "1234") { alert("Wrong Admin Pin!"); return; }
+
             const btn = document.getElementById('uploadBtn');
-            const pName = document.getElementById('pName').value;
-            const pPrice = document.getElementById('pPrice').value;
-            const pImg = document.getElementById('pImg').value;
-            const pLink = document.getElementById('pLink').value; 
-            const pStatus = document.getElementById('pStatus').value;
+            const name = document.getElementById('p-name').value;
+            const price = document.getElementById('p-price').value;
+            const img = document.getElementById('p-img').value;
+            const link = document.getElementById('p-link').value;
+            const status = document.getElementById('p-status').value;
 
-            if(!pName || !pPrice || !pImg || !pLink) { alert("Fill all fields!"); return; }
+            if(!name || !price || !img) { alert("Fill required fields!"); return; }
 
-            btn.innerText = "Uploading...";
+            btn.innerText = "Publishing...";
             btn.disabled = true;
 
-            const newProduct = { name: pName, price: pPrice, image: pImg, link: pLink, status: pStatus };
+            const newProduct = { name, price, image: img, link, status };
 
             try {
                 await fetch(scriptURL, { method: 'POST', body: JSON.stringify(newProduct) });
-                alert("Product Added!");
+                alert("Product Added Successfully!");
                 location.reload();
             } catch (e) {
-                alert("Error uploading. Check Google Script permissions.");
+                alert("Error! Check Script permissions.");
                 btn.disabled = false;
-                btn.innerText = "Upload to Sheet";
+                btn.innerText = "PUBLISH TO SHEET";
             }
         }
 
-        loadData();
+        window.onload = loadData;
     </script>
 </body>
 </html>
+
 
 
