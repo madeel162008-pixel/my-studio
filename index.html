@@ -9,7 +9,6 @@
         .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .logo { width: 140px; margin-bottom: 10px; cursor: pointer; }
         
-        /* Admin Section - Hidden by default */
         #loginArea { display: none; margin: 15px auto; padding: 15px; background: #f8f9fa; border-radius: 10px; max-width: 300px; border: 1px solid #ddd; }
         #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         
@@ -58,7 +57,8 @@
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxcnwoQYT1FbhmVAZr1_IP2dQJPOz6KzklD0h2licXBBv44lQLHRqtiqXK-u_xNY6Oh9A/exec'; 
+        // UPDATED SCRIPT URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz0oAMF8_RVA4kYAe2m1RPQKxtMzbkiWN_c0DAWLE2sGFXItDo-qQKfWvM173LIO5YVHQ/exec'; 
 
         let allData = [];
 
@@ -74,7 +74,7 @@
                 renderUI(false); 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('productGrid').innerHTML = "Failed to load products. Please check Script URL.";
+                document.getElementById('productGrid').innerHTML = "Failed to load. Make sure the Script is deployed as 'Anyone'.";
             }
         }
 
@@ -83,7 +83,7 @@
             grid.innerHTML = '';
             
             if (allData.length === 0) {
-                grid.innerHTML = "<p>No products found in the sheet.</p>";
+                grid.innerHTML = "<p>No products found. Please add some via Admin panel.</p>";
                 return;
             }
 
@@ -134,15 +134,15 @@
                 alert("Product Added!");
                 location.reload();
             } catch (e) {
-                alert("Error uploading.");
+                alert("Error uploading. Check Google Script permissions.");
                 btn.disabled = false;
                 btn.innerText = "Upload to Sheet";
             }
         }
 
-        // Initialize loading
         loadData();
     </script>
 </body>
 </html>
+
 
