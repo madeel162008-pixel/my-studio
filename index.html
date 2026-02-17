@@ -3,21 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Smart Inventory</title>
+    <title>My Live Inventory Dashboard</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; text-align: center; }
         .header { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .logo { width: 140px; margin-bottom: 10px; }
         #adminPanel { display: none; background: #fff; padding: 25px; margin: 20px auto; max-width: 450px; border-radius: 12px; border: 2px solid #34495e; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         input, select { width: 95%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
-        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .btn-main { padding: 12px 25px; background: #2c3e50; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
         .btn-main:hover { background: #1a252f; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: left; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: left; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-5px); }
         .product-img { width: 100%; height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
-        .price { color: #e67e22; font-size: 20px; font-weight: bold; }
-        .status-tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; float: right; background: #eee; }
+        .price { color: #e67e22; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eee; align-self: flex-start; margin-bottom: 5px; }
+        .btn-order { background: #ff4747; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-top: auto; transition: 0.2s; }
+        .btn-order:hover { background: #e03636; }
     </style>
 </head>
 <body>
@@ -27,29 +29,30 @@
         <h1>Live Product Management</h1>
         <div style="margin-top: 15px;">
             <input type="password" id="adminPass" placeholder="Admin Password" style="width: 200px; margin-right: 10px;">
-            <button class="btn-main" onclick="checkAdmin()">Admin Login</button>
+            <button class="btn-main" onclick="checkAdmin()" style="width: auto;">Admin Login</button>
         </div>
     </div>
 
     <div id="adminPanel">
         <h2 style="margin-top:0;">Add New Product</h2>
         <input type="text" id="pName" placeholder="Product Name">
-        <input type="text" id="pPrice" placeholder="Price">
+        <input type="text" id="pPrice" placeholder="Price (e.g. 1500 Rs)">
         <input type="text" id="pImg" placeholder="Direct Image Link (.jpg)">
+        <input type="text" id="pLink" placeholder="AliExpress Product Link">
         <select id="pStatus">
-            <option value="Public">Public</option>
-            <option value="Hidden">Hidden</option>
+            <option value="Public">Public (Show to Everyone)</option>
+            <option value="Hidden">Hidden (Draft)</option>
         </select>
-        <button class="btn-main" id="uploadBtn" onclick="addProduct()" style="width: 100%;">Upload to Sheet</button>
+        <button class="btn-main" id="uploadBtn" onclick="addProduct()">Upload to Sheet</button>
     </div>
 
     <div class="grid" id="productGrid">
-        <p>Loading your products...</p>
+        <p>Loading products from Google Sheets...</p>
     </div>
 
     <script>
-        // Line 53: Aapki Web App URL yahan set kar di gayi hai
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyoA5RUM7_QpwgWA_rBu6boO8KOediiIIZ8Z6BdtG_1Gu9s76pOEeM5O3YpYfhyc2-S/exec'; 
+        // Updated Script URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzXUN6WHInTNwdhJ0v_fV1zGCj_YqE_Y9oe2ggbuiU9BES6wJLS4iwV-k7fh4WouAOORA/exec'; 
 
         let allData = [];
 
@@ -59,51 +62,71 @@
                 allData = await res.json();
                 renderUI(false);
             } catch (e) {
-                document.getElementById('productGrid').innerHTML = "Connection Error. Check your Script deployment.";
+                document.getElementById('productGrid').innerHTML = "Connection Error. Make sure your Script is deployed correctly.";
             }
         }
 
         function renderUI(isAdmin) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
+            
             allData.forEach(item => {
                 if(!isAdmin && item.Status !== 'Public') return;
+
+                // Checking for Link in your sheet column
+                const orderLink = item.ProductLink || '#';
+
                 grid.innerHTML += `
                     <div class="card">
-                        <img src="${item.ImageURL}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200'">
                         <span class="status-tag">${item.Status}</span>
-                        <h3>${item.ProductName}</h3>
+                        <img src="${item.ImageURL}" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                        <h3 style="margin:0; font-size: 18px;">${item.ProductName}</h3>
                         <p class="price">${item.Price}</p>
+                        <a href="${orderLink}" target="_blank" class="btn-order">Order Now</a>
                     </div>`;
             });
         }
 
         async function addProduct() {
             const btn = document.getElementById('uploadBtn');
-            const newProduct = {
-                name: document.getElementById('pName').value,
-                price: document.getElementById('pPrice').value,
-                image: document.getElementById('pImg').value,
-                status: document.getElementById('pStatus').value
-            };
-            if(!newProduct.name || !newProduct.price || !newProduct.image) { alert("Please fill all fields!"); return; }
+            const pName = document.getElementById('pName').value;
+            const pPrice = document.getElementById('pPrice').value;
+            const pImg = document.getElementById('pImg').value;
+            const pLink = document.getElementById('pLink').value; 
+            const pStatus = document.getElementById('pStatus').value;
+
+            if(!pName || !pPrice || !pImg || !pLink) { alert("Please fill ALL fields including the link!"); return; }
+
             btn.innerText = "Uploading...";
+            btn.disabled = true;
+
+            const newProduct = { 
+                name: pName, 
+                price: pPrice, 
+                image: pImg, 
+                link: pLink, 
+                status: pStatus 
+            };
+
             try {
                 await fetch(scriptURL, { method: 'POST', body: JSON.stringify(newProduct) });
                 alert("Product Added Successfully!");
                 location.reload();
-            } catch(e) {
-                alert("Error! Make sure you deployed as 'Anyone'.");
+            } catch (e) {
+                alert("Error! Check Script permissions.");
+                btn.disabled = false;
                 btn.innerText = "Upload to Sheet";
             }
         }
 
         function checkAdmin() {
-            if(document.getElementById('adminPass').value === "1234") {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "1234") { 
                 document.getElementById('adminPanel').style.display = 'block';
                 renderUI(true);
-                alert("Admin Access Granted!");
-            } else { alert("Wrong Password!"); }
+            } else {
+                alert("Incorrect Password!");
+            }
         }
 
         window.onload = loadData;
