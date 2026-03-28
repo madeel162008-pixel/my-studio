@@ -2,130 +2,591 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>AM STUDIO | Pro Dashboard</title>
+    <!-- Font Awesome 6 (free) for watch, bracelet, headphones icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; text-align: center; }
-        .navbar { background: #111; padding: 15px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; }
-        .navbar a { color: #d4af37; text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: bold; text-transform: uppercase; }
-        .header { border-bottom: 2px solid #d4af37; padding: 30px 20px; margin-bottom: 30px; }
-        .logo { width: 150px; height: auto; margin-bottom: 10px; cursor: pointer; }
-        #discount-bar { background: #d4af37; color: #000; padding: 10px; font-weight: bold; display: block; font-size: 14px; }
-        .category-container { margin-bottom: 40px; padding: 0 20px; }
-        .cat-box { display: inline-block; border: 1px solid #333; padding: 15px; margin: 5px; width: 150px; background: #111; border-radius: 5px; font-size: 12px; letter-spacing: 1px; color: #d4af37; }
-        .product-card { border: 2px solid #d4af37; background: #0a0a0a; margin: 20px auto; max-width: 600px; padding: 20px; border-radius: 10px; position: relative; }
-        .img { width: 100%; max-width: 400px; height: auto; border-radius: 5px; border: 1px solid #444; }
-        .btn { background: #d4af37; color: #000; padding: 12px 25px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 15px; border-radius: 4px; border:none; cursor:pointer; }
-        
-        /* Admin specific buttons on cards */
-        .admin-edit-btn { position: absolute; top: 10px; right: 10px; background: #25D366; color: white; padding: 5px 10px; font-size: 12px; border-radius: 3px; cursor: pointer; display: none; border: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        #admin-panel { display: none; background: #1a1a1a; padding: 25px; border: 3px solid #d4af37; border-radius: 15px; margin: 20px auto; max-width: 500px; text-align: left; }
-        #admin-panel input, #admin-panel select { width: 100%; padding: 10px; margin: 8px 0; background: #222; color: #fff; border: 1px solid #444; }
-        .save-btn { background: #25D366; border: none; padding: 15px; width: 100%; color: #fff; cursor: pointer; font-weight: bold; }
-        .footer-section { background: #111; padding: 40px 20px; border-top: 1px solid #333; }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ---------- PRELOADER ANIMATION (watches, bracelets, headphones rotate & form logo) ---------- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .animation-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbit-icon {
+            position: absolute;
+            font-size: 48px;
+            color: #d4af37;
+            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            will-change: transform;
+        }
+
+        /* central logo (hidden at first, appears after merging) */
+        .central-logo {
+            width: 110px;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s ease-out;
+            border-radius: 50%;
+            background: #000;
+            padding: 5px;
+        }
+
+        /* keyframes for rotation orbit */
+        @keyframes orbitAround {
+            0% { transform: rotate(0deg) translateX(120px) rotate(0deg); opacity: 0.9; }
+            100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); opacity: 1; }
+        }
+
+        .orbit-active {
+            animation: orbitAround 1.8s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+        }
+
+        /* merging state: move to center */
+        .merge-icon {
+            transform: translate(0, 0) scale(0.2) !important;
+            opacity: 0 !important;
+            transition: all 0.5s ease-in !important;
+        }
+
+        .logo-reveal {
+            opacity: 1 !important;
+            transform: scale(1) !important;
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2) 0.1s !important;
+        }
+
+        /* main content initially hidden until preloader finishes */
+        #mainContent {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* navbar, header etc */
+        .navbar {
+            background: #111;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            text-align: center;   /* CENTERED NAVBAR LINKS */
+        }
+
+        .navbar a {
+            color: #d4af37;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .header {
+            border-bottom: 2px solid #d4af37;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            text-align: center;   /* CENTERED LOGO AND TAGLINE */
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        #discount-bar {
+            background: #d4af37;
+            color: #000;
+            padding: 10px;
+            font-weight: bold;
+            display: block;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .category-container {
+            margin-bottom: 40px;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .cat-box {
+            border: 1px solid #333;
+            padding: 15px;
+            width: 150px;
+            background: #111;
+            border-radius: 5px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #d4af37;
+            text-align: center;
+        }
+
+        /* ---------- PRODUCT GRID : 2 COLUMNS (horizontally two by two) ---------- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px 25px;
+        }
+
+        .product-card {
+            border: 2px solid #d4af37;
+            background: #0a0a0a;
+            border-radius: 12px;
+            position: relative;
+            padding: 20px 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(212, 175, 55, 0.2);
+            border-color: #e5c559;
+        }
+
+        .img {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid #444;
+            object-fit: cover;
+            margin: 12px 0;
+        }
+
+        .btn {
+            background: #d4af37;
+            color: #000;
+            padding: 12px 25px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 15px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #f5cb42;
+            transform: scale(0.98);
+        }
+
+        /* admin edit button */
+        .admin-edit-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #25D366;
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        /* search bar styling */
+        .search-section {
+            max-width: 700px;
+            margin: 20px auto 10px auto;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            background: #111;
+            border: 1.5px solid #d4af37;
+            border-radius: 60px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: #f5cb42;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        }
+
+        .search-box::placeholder {
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        /* admin panel */
+        #admin-panel {
+            display: none;
+            background: #1a1a1a;
+            padding: 25px;
+            border: 3px solid #d4af37;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        #admin-panel input, #admin-panel select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 6px;
+        }
+
+        .save-btn {
+            background: #25D366;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .footer-section {
+            background: #111;
+            padding: 40px 20px;
+            border-top: 1px solid #333;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* responsive: on smaller screens 1 column */
+        @media (max-width: 700px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+
+        /* no products message */
+        .no-products {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #aaa;
+            grid-column: span 2;
+        }
+
+        @media (max-width: 700px) {
+            .no-products {
+                grid-column: span 1;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS - AM STUDIO</div>
-
-    <div class="navbar">
-        <a href="#products">Products</a>
-        <a href="https://wa.me/923172722004">Contact</a>
+    <!-- PRELOADER ANIMATION: watches, bracelets, headphones rotate and form logo -->
+    <div id="preloader">
+        <div class="animation-container" id="animContainer">
+            <!-- watch icon (fontawesome) -->
+            <i class="orbit-icon fas fa-clock" id="watchIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+            <!-- bracelet icon (gem/bracelet style: fa-gem) -->
+            <i class="orbit-icon fas fa-gem" id="braceletIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+            <!-- headphones icon -->
+            <i class="orbit-icon fas fa-headphones" id="headphoneIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
+            <!-- central logo (will be revealed after merging) -->
+            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="AM STUDIO LOGO" class="central-logo" id="centralLogoAnim">
+        </div>
     </div>
 
-    <div class="header">
-        <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleAdmin()">
-        <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
-    </div>
+    <!-- MAIN WEBSITE CONTENT (initially hidden) -->
+    <div id="mainContent">
+        <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS - AM STUDIO</div>
 
-    <div id="admin-panel">
-        <h3 id="panel-title">ADMIN DASHBOARD (ADD)</h3>
-        <input type="password" id="adminPass" placeholder="Enter Admin Pin">
-        <hr>
-        <input type="hidden" id="edit-index"> <input type="text" id="p-name" placeholder="Product Name">
-        <input type="text" id="p-price" placeholder="Price (PKR)">
-        <input type="text" id="p-img" placeholder="Image Link (Direct)">
-        <input type="text" id="p-link" placeholder="Order Link">
-        <select id="p-status">
-            <option value="Public">Public</option>
-            <option value="Hidden">Hidden</option>
-        </select>
-        <button class="save-btn" id="uploadBtn" onclick="addProduct()">PUBLISH TO SHEET</button>
-        <button id="cancel-edit" style="display:none; background:#555; width:100%; margin-top:10px; padding:10px; color:white; border:none; cursor:pointer;" onclick="resetForm()">Cancel Edit</button>
-    </div>
+        <div class="navbar">
+            <a href="#products">Products</a>
+            <a href="https://wa.me/923172722004">Contact</a>
+        </div>
 
-    <div class="category-container">
-        <div class="cat-box">HOME DECOR</div>
-        <div class="cat-box">FASHION</div>
-        <div class="cat-box">SMART TECH</div>
-    </div>
+        <div class="header">
+            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleAdmin()">
+            <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
+        </div>
 
-    <div id="products">
-        <div id="dynamic-products">Loading products from AM STUDIO...</div>
-    </div>
+        <div id="admin-panel">
+            <h3 id="panel-title">ADMIN DASHBOARD (ADD)</h3>
+            <input type="password" id="adminPass" placeholder="Enter Admin Pin">
+            <hr>
+            <input type="hidden" id="edit-index"> 
+            <input type="text" id="p-name" placeholder="Product Name">
+            <input type="text" id="p-price" placeholder="Price (PKR)">
+            <input type="text" id="p-img" placeholder="Image Link (Direct)">
+            <input type="text" id="p-link" placeholder="Order Link">
+            <select id="p-status">
+                <option value="Public">Public</option>
+                <option value="Hidden">Hidden</option>
+            </select>
+            <button class="save-btn" id="uploadBtn" onclick="addProduct()">PUBLISH TO SHEET</button>
+            <button id="cancel-edit" style="display:none; background:#555; width:100%; margin-top:10px; padding:10px; color:white; border:none; cursor:pointer;" onclick="resetForm()">Cancel Edit</button>
+        </div>
 
-    <div class="footer-section">
-        <h3>ABOUT AM STUDIO</h3>
-        <p style="color: #aaa; font-size: 14px;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
+        <div class="category-container">
+            <div class="cat-box">HOME DECOR</div>
+            <div class="cat-box">FASHION</div>
+            <div class="cat-box">SMART TECH</div>
+        </div>
+
+        <!-- SEARCH BAR ADDED -->
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name... (e.g., watch, bracelet)" autocomplete="off">
+        </div>
+
+        <div id="products">
+            <div id="dynamic-products" class="products-grid">Loading products from AM STUDIO...</div>
+        </div>
+
+        <div class="footer-section">
+            <h3>ABOUT AM STUDIO</h3>
+            <p style="color: #aaa; font-size: 14px;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p>
+        </div>
     </div>
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec'; 
         let globalData = [];
         let isAdminLoggedIn = false;
+        let currentSearchTerm = "";
 
-        function toggleAdmin() {
-            let panel = document.getElementById('admin-panel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        // DOM elements
+        const preloader = document.getElementById('preloader');
+        const mainContent = document.getElementById('mainContent');
+        const watchIcon = document.getElementById('watchIcon');
+        const braceletIcon = document.getElementById('braceletIcon');
+        const headphoneIcon = document.getElementById('headphoneIcon');
+        const centralLogoAnim = document.getElementById('centralLogoAnim');
+
+        // ---------- PRELOADER ANIMATION (watches, bracelets, headphones rotate and form logo) ----------
+        function startOrbitAnimation() {
+            // set initial absolute positions for orbiting (around center)
+            const centerX = 0, centerY = 0;
+            const radius = 115;
+            // place icons in triangle positions relative to container
+            function setOrbitPositions(angleOffset = 0) {
+                // angles: 0deg, 120deg, 240deg
+                const angles = [0, 120, 240];
+                const icons = [watchIcon, braceletIcon, headphoneIcon];
+                icons.forEach((icon, idx) => {
+                    let rad = (angles[idx] + angleOffset) * Math.PI / 180;
+                    let x = Math.cos(rad) * radius;
+                    let y = Math.sin(rad) * radius;
+                    icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+                    icon.style.transition = "transform 0.1s linear";
+                });
+            }
+            
+            // rotating effect: increment angle
+            let angle = 0;
+            const orbitInterval = setInterval(() => {
+                if (!preloader || preloader.style.display === 'none') {
+                    clearInterval(orbitInterval);
+                    return;
+                }
+                angle = (angle + 8) % 360;
+                const rad = angle * Math.PI / 180;
+                const anglesPos = [0, 120, 240];
+                const icons = [watchIcon, braceletIcon, headphoneIcon];
+                icons.forEach((icon, idx) => {
+                    let finalAngle = anglesPos[idx] + angle;
+                    let radian = finalAngle * Math.PI / 180;
+                    let x = Math.cos(radian) * radius;
+                    let y = Math.sin(radian) * radius;
+                    icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+                });
+            }, 45);
+            
+            // after 1.9 seconds -> merging animation: icons fly to center, logo expands
+            setTimeout(() => {
+                clearInterval(orbitInterval);
+                // merge all icons toward center
+                watchIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
+                braceletIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
+                headphoneIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
+                
+                watchIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
+                braceletIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
+                headphoneIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
+                watchIcon.style.opacity = "0";
+                braceletIcon.style.opacity = "0";
+                headphoneIcon.style.opacity = "0";
+                
+                // reveal central logo with scaling effect
+                centralLogoAnim.classList.add('logo-reveal');
+                setTimeout(() => {
+                    // fade out preloader and show main website
+                    preloader.style.opacity = "0";
+                    setTimeout(() => {
+                        preloader.style.display = "none";
+                        mainContent.style.display = "block";
+                        setTimeout(() => {
+                            mainContent.style.opacity = "1";
+                        }, 30);
+                    }, 500);
+                }, 550);
+            }, 1800);
         }
 
+        // trigger animation after page loads
+        window.addEventListener('load', () => {
+            startOrbitAnimation();
+            loadData(); // fetch products in background
+        });
+
+        // ---------- PRODUCT RENDERING WITH SEARCH & ADMIN VISIBILITY (2 columns grid) ----------
+        function refreshProductDisplay() {
+            if (!globalData.length) {
+                const container = document.getElementById('dynamic-products');
+                if (container) container.innerHTML = '<div class="no-products">✨ No products loaded yet. Admin can add.</div>';
+                return;
+            }
+            
+            const searchTerm = currentSearchTerm.toLowerCase().trim();
+            // build filtered array with original index
+            const filteredItems = [];
+            globalData.forEach((item, idx) => {
+                // visibility filter: if not admin and status is Hidden => skip
+                if (!isAdminLoggedIn && item.Status !== 'Public') return;
+                // search filter by product name
+                if (searchTerm !== "" && !item.ProductName.toLowerCase().includes(searchTerm)) return;
+                filteredItems.push({ ...item, originalIndex: idx });
+            });
+            
+            const container = document.getElementById('dynamic-products');
+            if (!container) return;
+            
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<div class="no-products">🔎 No matching products found. Try another keyword.</div>';
+                return;
+            }
+            
+            let html = '';
+            filteredItems.forEach(item => {
+                const hiddenBadge = (item.Status === 'Hidden' && isAdminLoggedIn) ? '<span style="color:#ff8866; font-size:12px; margin-left:8px;">(Hidden)</span>' : '';
+                html += `
+                    <div class="product-card">
+                        <button class="admin-edit-btn" style="display:${isAdminLoggedIn ? 'block' : 'none'};" onclick="setupEdit(${item.originalIndex})">✎ EDIT</button>
+                        <h2 style="color: #d4af37; font-size: 1.4rem;">${escapeHtml(item.ProductName)}</h2>
+                        <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
+                        <p style="font-weight:bold; font-size:1.2rem;">PKR ${item.Price} ${hiddenBadge}</p>
+                        <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        // Helper to avoid XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+        
+        // load data from Google Sheets
         async function loadData() {
             try {
                 const response = await fetch(scriptURL);
                 const allData = await response.json();
                 globalData = allData;
-                renderUI(allData);
+                refreshProductDisplay();
             } catch (error) {
-                document.getElementById('dynamic-products').innerHTML = "Failed to load products.";
+                document.getElementById('dynamic-products').innerHTML = '<div class="no-products">⚠️ Failed to load products. Check connection.</div>';
+                console.error(error);
             }
         }
-
-        function renderUI(data) {
-            let container = document.getElementById('dynamic-products');
-            container.innerHTML = "";
-            
-            data.forEach((item, index) => {
-                // Admin login ke baad Hidden products bhi dikhayi denge edit ke liye
-                if(!isAdminLoggedIn && item.Status !== 'Public') return;
-
-                container.innerHTML += `
-                    <div class="product-card">
-                        <button class="admin-edit-btn" style="display:${isAdminLoggedIn ? 'block' : 'none'}" onclick="setupEdit(${index})">EDIT</button>
-                        <h2 style="color: #d4af37;">${item.ProductName}</h2>
-                        <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
-                        <p>PKR ${item.Price} ${item.Status === 'Hidden' ? '<span style="color:red;">(Hidden)</span>' : ''}</p>
-                        <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
-                    </div>`;
-            });
+        
+        // search event listener
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    currentSearchTerm = e.target.value;
+                    refreshProductDisplay();
+                });
+            }
         }
-
-        function setupEdit(index) {
-            const item = globalData[index];
+        
+        // admin edit setup
+        function setupEdit(originalIndex) {
+            const item = globalData[originalIndex];
+            if (!item) return;
             document.getElementById('panel-title').innerText = "EDITING PRODUCT";
             document.getElementById('p-name').value = item.ProductName;
             document.getElementById('p-price').value = item.Price;
             document.getElementById('p-img').value = item.ImageURL;
-            document.getElementById('p-link').value = item.ProductLink;
+            document.getElementById('p-link').value = item.ProductLink || '';
             document.getElementById('p-status').value = item.Status;
-            document.getElementById('edit-index').value = index + 2; // Sheet row matches (Header + index start at 0)
-            
+            // sheet row index = header row (1) + originalIndex + 1? originalIndex starts at 0 => row = originalIndex+2
+            document.getElementById('edit-index').value = originalIndex + 2;
             document.getElementById('uploadBtn').innerText = "UPDATE PRODUCT";
             document.getElementById('cancel-edit').style.display = "block";
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
+        
         function resetForm() {
             document.getElementById('panel-title').innerText = "ADMIN DASHBOARD (ADD)";
             document.getElementById('p-name').value = "";
@@ -136,50 +597,90 @@
             document.getElementById('uploadBtn').innerText = "PUBLISH TO SHEET";
             document.getElementById('cancel-edit').style.display = "none";
         }
-
+        
+        // add or update product
         async function addProduct() {
             const pass = document.getElementById('adminPass').value;
-            if(pass !== "1234") { 
+            if (pass !== "1234") { 
                 alert("Wrong Pin! Login properly to Edit/Add."); 
                 return; 
-            } else {
+            } 
+            // set admin logged in true for UI (show edit buttons)
+            if (!isAdminLoggedIn) {
                 isAdminLoggedIn = true;
-                renderUI(globalData); // Refresh UI to show edit buttons
+                refreshProductDisplay(); // show edit buttons immediately
             }
-
-            const btn = document.getElementById('uploadBtn');
+            
             const name = document.getElementById('p-name').value;
             const price = document.getElementById('p-price').value;
             const img = document.getElementById('p-img').value;
             const link = document.getElementById('p-link').value;
             const status = document.getElementById('p-status').value;
             const editRow = document.getElementById('edit-index').value;
-
-            if(!name || !price || !img) { alert("Fill all fields!"); return; }
-
+            
+            if (!name || !price || !img) { 
+                alert("Fill all fields (Name, Price, Image)!"); 
+                return; 
+            }
+            
+            const btn = document.getElementById('uploadBtn');
+            const originalText = btn.innerText;
             btn.innerText = "Processing...";
             btn.disabled = true;
-
+            
             const payload = { 
                 name, price, image: img, link, status,
                 action: editRow ? "edit" : "add",
-                row: editRow
+                row: editRow || ""
             };
-
+            
             try {
                 await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-                alert(editRow ? "Product Updated!" : "Product Added!");
-                location.reload();
+                alert(editRow ? "✅ Product Updated!" : "✅ Product Added!");
+                location.reload(); // reload to sync with sheet and refresh globalData
             } catch (e) {
+                alert("Error saving. Reloading page...");
                 location.reload();
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
-
-        window.onload = loadData;
+        
+        function toggleAdmin() {
+            let panel = document.getElementById('admin-panel');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'block';
+            }
+        }
+        
+        // expose global functions
+        window.setupEdit = setupEdit;
+        window.addProduct = addProduct;
+        window.resetForm = resetForm;
+        window.toggleAdmin = toggleAdmin;
+        
+        // on load finish, ensure search bar works and main content ready but preloader handles visibility
+        document.addEventListener('DOMContentLoaded', () => {
+            initSearch();
+            // if somehow preloader not finished but data loaded: but preloader will show main content later
+            // ensure admin panel hidden initially and later if needed
+        });
+        
+        // For admin login after initial load: also refresh display if login via password check from addProduct edge (already covered)
+        // also make sure after admin pass inside addProduct we call refreshProductDisplay.
+        // Additionally we want manual admin toggle that doesn't break anything
+        window.forceAdminRefresh = function() {
+            if (isAdminLoggedIn) refreshProductDisplay();
+        }
+        
+        // in case of any product edit later, refresh after toggling
+        // all good, preserve original google sheets script URL.
     </script>
 </body>
 </html>
-
 
 
 
