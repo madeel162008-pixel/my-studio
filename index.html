@@ -65,23 +65,6 @@
             padding: 5px;
         }
 
-        /* keyframes for rotation orbit */
-        @keyframes orbitAround {
-            0% { transform: rotate(0deg) translateX(120px) rotate(0deg); opacity: 0.9; }
-            100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); opacity: 1; }
-        }
-
-        .orbit-active {
-            animation: orbitAround 1.8s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
-        }
-
-        /* merging state: move to center */
-        .merge-icon {
-            transform: translate(0, 0) scale(0.2) !important;
-            opacity: 0 !important;
-            transition: all 0.5s ease-in !important;
-        }
-
         .logo-reveal {
             opacity: 1 !important;
             transform: scale(1) !important;
@@ -103,7 +86,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            text-align: center;   /* CENTERED NAVBAR LINKS */
+            text-align: center;
         }
 
         .navbar a {
@@ -120,14 +103,14 @@
             border-bottom: 2px solid #d4af37;
             padding: 30px 20px;
             margin-bottom: 30px;
-            text-align: center;   /* CENTERED LOGO AND TAGLINE */
+            text-align: center;
         }
 
         .logo {
             width: 150px;
             height: auto;
             margin-bottom: 10px;
-            cursor: pointer;
+            cursor: default;
             display: inline-block;
         }
 
@@ -162,7 +145,7 @@
             text-align: center;
         }
 
-        /* ---------- PRODUCT GRID : 2 COLUMNS (horizontally two by two) ---------- */
+        /* ---------- PRODUCT GRID : 2 COLUMNS ---------- */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -176,7 +159,6 @@
             border: 2px solid #d4af37;
             background: #0a0a0a;
             border-radius: 12px;
-            position: relative;
             padding: 20px 15px;
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
@@ -221,22 +203,6 @@
             transform: scale(0.98);
         }
 
-        /* admin edit button */
-        .admin-edit-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #25D366;
-            color: white;
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 30px;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-            z-index: 10;
-        }
-
         /* search bar styling */
         .search-section {
             max-width: 700px;
@@ -266,40 +232,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* admin panel */
-        #admin-panel {
-            display: none;
-            background: #1a1a1a;
-            padding: 25px;
-            border: 3px solid #d4af37;
-            border-radius: 15px;
-            margin: 20px auto;
-            max-width: 500px;
-            text-align: left;
-        }
-
-        #admin-panel input, #admin-panel select {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: #222;
-            color: #fff;
-            border: 1px solid #444;
-            border-radius: 6px;
-        }
-
-        .save-btn {
-            background: #25D366;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
         .footer-section {
             background: #111;
             padding: 40px 20px;
@@ -316,7 +248,6 @@
             }
         }
 
-        /* no products message */
         .no-products {
             text-align: center;
             padding: 50px;
@@ -330,25 +261,121 @@
                 grid-column: span 1;
             }
         }
+
+        /* ---------- EMAIL MODAL STYLES ---------- */
+        .email-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(8px);
+            z-index: 30000;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+        }
+        .email-modal-content {
+            background: #0c0c0c;
+            border: 2px solid #d4af37;
+            border-radius: 28px;
+            padding: 35px 28px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.6), 0 0 15px rgba(212,175,55,0.3);
+            animation: fadeSlideUp 0.4s ease-out;
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .email-modal h3 {
+            font-size: 26px;
+            color: #d4af37;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .email-modal p {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 25px;
+        }
+        .email-modal input {
+            width: 100%;
+            padding: 14px 18px;
+            background: #1e1e1e;
+            border: 1px solid #d4af37;
+            border-radius: 50px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 25px;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .email-modal input:focus {
+            border-color: #f5cb42;
+            box-shadow: 0 0 8px rgba(212,175,55,0.6);
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .modal-btn {
+            padding: 12px 0;
+            font-weight: bold;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+        }
+        .btn-login {
+            background: #d4af37;
+            color: #000;
+            border: 1px solid #d4af37;
+        }
+        .btn-login:hover {
+            background: #f5cb42;
+            transform: scale(0.98);
+        }
+        .btn-guest {
+            background: transparent;
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+        .btn-guest:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: #f5cb42;
+        }
+        .error-msg {
+            color: #ff8c6e;
+            font-size: 12px;
+            margin-top: -18px;
+            margin-bottom: 12px;
+            display: block;
+        }
     </style>
 </head>
 <body>
 
-    <!-- PRELOADER ANIMATION: watches, bracelets, headphones rotate and form logo -->
+    <!-- PRELOADER ANIMATION -->
     <div id="preloader">
         <div class="animation-container" id="animContainer">
-            <!-- watch icon (fontawesome) -->
-            <i class="orbit-icon fas fa-clock" id="watchIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-            <!-- bracelet icon (gem/bracelet style: fa-gem) -->
-            <i class="orbit-icon fas fa-gem" id="braceletIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-            <!-- headphones icon -->
-            <i class="orbit-icon fas fa-headphones" id="headphoneIcon" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-            <!-- central logo (will be revealed after merging) -->
+            <i class="orbit-icon fas fa-clock" id="watchIcon"></i>
+            <i class="orbit-icon fas fa-gem" id="braceletIcon"></i>
+            <i class="orbit-icon fas fa-headphones" id="headphoneIcon"></i>
             <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="AM STUDIO LOGO" class="central-logo" id="centralLogoAnim">
         </div>
     </div>
 
-    <!-- MAIN WEBSITE CONTENT (initially hidden) -->
+    <!-- MAIN WEBSITE CONTENT -->
     <div id="mainContent">
         <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS - AM STUDIO</div>
 
@@ -358,25 +385,8 @@
         </div>
 
         <div class="header">
-            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo" onclick="toggleAdmin()">
+            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo">
             <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
-        </div>
-
-        <div id="admin-panel">
-            <h3 id="panel-title">ADMIN DASHBOARD (ADD)</h3>
-            <input type="password" id="adminPass" placeholder="Enter Admin Pin">
-            <hr>
-            <input type="hidden" id="edit-index"> 
-            <input type="text" id="p-name" placeholder="Product Name">
-            <input type="text" id="p-price" placeholder="Price (PKR)">
-            <input type="text" id="p-img" placeholder="Image Link (Direct)">
-            <input type="text" id="p-link" placeholder="Order Link">
-            <select id="p-status">
-                <option value="Public">Public</option>
-                <option value="Hidden">Hidden</option>
-            </select>
-            <button class="save-btn" id="uploadBtn" onclick="addProduct()">PUBLISH TO SHEET</button>
-            <button id="cancel-edit" style="display:none; background:#555; width:100%; margin-top:10px; padding:10px; color:white; border:none; cursor:pointer;" onclick="resetForm()">Cancel Edit</button>
         </div>
 
         <div class="category-container">
@@ -385,7 +395,7 @@
             <div class="cat-box">SMART TECH</div>
         </div>
 
-        <!-- SEARCH BAR ADDED -->
+        <!-- SEARCH BAR -->
         <div class="search-section">
             <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name... (e.g., watch, bracelet)" autocomplete="off">
         </div>
@@ -400,13 +410,27 @@
         </div>
     </div>
 
+    <!-- EMAIL MODAL (appears once for new visitors) -->
+    <div id="emailModal" class="email-modal">
+        <div class="email-modal-content">
+            <h3>✦ AM STUDIO ✦</h3>
+            <p>Enter your email to unlock exclusive updates & premium access</p>
+            <input type="email" id="visitorEmail" placeholder="Your email address" autocomplete="email">
+            <div id="emailError" class="error-msg"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-login" id="modalLoginBtn">LOGIN</button>
+                <button class="modal-btn btn-guest" id="modalGuestBtn">CONTINUE SHOPPING (NO LOGIN)</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ======================= NO ADMIN DASHBOARD - PURE PRODUCT DISPLAY =======================
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec'; 
         let globalData = [];
-        let isAdminLoggedIn = false;
         let currentSearchTerm = "";
 
-        // DOM elements
+        // Preloader elements
         const preloader = document.getElementById('preloader');
         const mainContent = document.getElementById('mainContent');
         const watchIcon = document.getElementById('watchIcon');
@@ -414,36 +438,22 @@
         const headphoneIcon = document.getElementById('headphoneIcon');
         const centralLogoAnim = document.getElementById('centralLogoAnim');
 
-        // ---------- PRELOADER ANIMATION (watches, bracelets, headphones rotate and form logo) ----------
+        // ---------- PRELOADER ANIMATION (rotate & merge) ----------
         function startOrbitAnimation() {
-            // set initial absolute positions for orbiting (around center)
-            const centerX = 0, centerY = 0;
             const radius = 115;
-            // place icons in triangle positions relative to container
-            function setOrbitPositions(angleOffset = 0) {
-                // angles: 0deg, 120deg, 240deg
-                const angles = [0, 120, 240];
-                const icons = [watchIcon, braceletIcon, headphoneIcon];
-                icons.forEach((icon, idx) => {
-                    let rad = (angles[idx] + angleOffset) * Math.PI / 180;
-                    let x = Math.cos(rad) * radius;
-                    let y = Math.sin(rad) * radius;
-                    icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-                    icon.style.transition = "transform 0.1s linear";
-                });
-            }
-            
-            // rotating effect: increment angle
             let angle = 0;
+            // set initial positions
+            const icons = [watchIcon, braceletIcon, headphoneIcon];
+            icons.forEach(icon => {
+                if (icon) icon.style.position = 'absolute';
+            });
             const orbitInterval = setInterval(() => {
                 if (!preloader || preloader.style.display === 'none') {
                     clearInterval(orbitInterval);
                     return;
                 }
                 angle = (angle + 8) % 360;
-                const rad = angle * Math.PI / 180;
                 const anglesPos = [0, 120, 240];
-                const icons = [watchIcon, braceletIcon, headphoneIcon];
                 icons.forEach((icon, idx) => {
                     let finalAngle = anglesPos[idx] + angle;
                     let radian = finalAngle * Math.PI / 180;
@@ -453,65 +463,98 @@
                 });
             }, 45);
             
-            // after 1.9 seconds -> merging animation: icons fly to center, logo expands
             setTimeout(() => {
                 clearInterval(orbitInterval);
-                // merge all icons toward center
-                watchIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
-                braceletIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
-                headphoneIcon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
-                
-                watchIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
-                braceletIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
-                headphoneIcon.style.transform = "translate(-50%, -50%) scale(0.1)";
-                watchIcon.style.opacity = "0";
-                braceletIcon.style.opacity = "0";
-                headphoneIcon.style.opacity = "0";
-                
-                // reveal central logo with scaling effect
+                icons.forEach(icon => {
+                    icon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)";
+                    icon.style.transform = "translate(-50%, -50%) scale(0.1)";
+                    icon.style.opacity = "0";
+                });
                 centralLogoAnim.classList.add('logo-reveal');
                 setTimeout(() => {
-                    // fade out preloader and show main website
                     preloader.style.opacity = "0";
                     setTimeout(() => {
                         preloader.style.display = "none";
                         mainContent.style.display = "block";
                         setTimeout(() => {
                             mainContent.style.opacity = "1";
+                            showEmailModalIfNewUser();
                         }, 30);
                     }, 500);
                 }, 550);
             }, 1800);
         }
 
-        // trigger animation after page loads
-        window.addEventListener('load', () => {
-            startOrbitAnimation();
-            loadData(); // fetch products in background
-        });
-
-        // ---------- PRODUCT RENDERING WITH SEARCH & ADMIN VISIBILITY (2 columns grid) ----------
+        // ---------- EMAIL MODAL LOGIC (no admin, just stores email) ----------
+        const emailModal = document.getElementById('emailModal');
+        const visitorEmailInput = document.getElementById('visitorEmail');
+        const emailErrorSpan = document.getElementById('emailError');
+        
+        function isEmailDecisionMade() {
+            return localStorage.getItem('am_email_decision') === 'true';
+        }
+        
+        function showEmailModalIfNewUser() {
+            if (isEmailDecisionMade()) return;
+            if (!emailModal) return;
+            document.body.style.overflow = 'hidden';
+            emailModal.style.display = 'flex';
+        }
+        
+        function hideEmailModal() {
+            emailModal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        function handleEmailDecision(action) {
+            const email = visitorEmailInput.value.trim();
+            if (!email || !validateEmail(email)) {
+                emailErrorSpan.innerText = "⚠️ Please enter a valid email address.";
+                return false;
+            }
+            emailErrorSpan.innerText = "";
+            localStorage.setItem('am_user_email', email);
+            localStorage.setItem('am_email_decision', 'true');
+            
+            if (action === 'login') {
+                console.log(`🔐 LOGIN MODE | Email: ${email} | Welcome back!`);
+                // Optional: you could add a small welcome toast, but no admin panel.
+            } else {
+                console.log(`🛒 GUEST MODE | Email: ${email} | Continue as guest.`);
+            }
+            hideEmailModal();
+            return true;
+        }
+        
+        function bindModalEvents() {
+            const loginBtn = document.getElementById('modalLoginBtn');
+            const guestBtn = document.getElementById('modalGuestBtn');
+            if (loginBtn) loginBtn.addEventListener('click', () => handleEmailDecision('login'));
+            if (guestBtn) guestBtn.addEventListener('click', () => handleEmailDecision('guest'));
+        }
+        
+        // ---------- PRODUCT DISPLAY (no edit buttons, all products Public) ----------
         function refreshProductDisplay() {
+            const container = document.getElementById('dynamic-products');
             if (!globalData.length) {
-                const container = document.getElementById('dynamic-products');
-                if (container) container.innerHTML = '<div class="no-products">✨ No products loaded yet. Admin can add.</div>';
+                if (container) container.innerHTML = '<div class="no-products">✨ No products loaded yet. Check back soon.</div>';
                 return;
             }
             
             const searchTerm = currentSearchTerm.toLowerCase().trim();
-            // build filtered array with original index
-            const filteredItems = [];
-            globalData.forEach((item, idx) => {
-                // visibility filter: if not admin and status is Hidden => skip
-                if (!isAdminLoggedIn && item.Status !== 'Public') return;
-                // search filter by product name
-                if (searchTerm !== "" && !item.ProductName.toLowerCase().includes(searchTerm)) return;
-                filteredItems.push({ ...item, originalIndex: idx });
+            const filteredItems = globalData.filter(item => {
+                // Show only Public products (no hidden items at all)
+                if (item.Status !== 'Public') return false;
+                if (searchTerm !== "" && !item.ProductName.toLowerCase().includes(searchTerm)) return false;
+                return true;
             });
             
-            const container = document.getElementById('dynamic-products');
             if (!container) return;
-            
             if (filteredItems.length === 0) {
                 container.innerHTML = '<div class="no-products">🔎 No matching products found. Try another keyword.</div>';
                 return;
@@ -519,13 +562,11 @@
             
             let html = '';
             filteredItems.forEach(item => {
-                const hiddenBadge = (item.Status === 'Hidden' && isAdminLoggedIn) ? '<span style="color:#ff8866; font-size:12px; margin-left:8px;">(Hidden)</span>' : '';
                 html += `
                     <div class="product-card">
-                        <button class="admin-edit-btn" style="display:${isAdminLoggedIn ? 'block' : 'none'};" onclick="setupEdit(${item.originalIndex})">✎ EDIT</button>
                         <h2 style="color: #d4af37; font-size: 1.4rem;">${escapeHtml(item.ProductName)}</h2>
                         <img src="${item.ImageURL}" class="img" onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
-                        <p style="font-weight:bold; font-size:1.2rem;">PKR ${item.Price} ${hiddenBadge}</p>
+                        <p style="font-weight:bold; font-size:1.2rem;">PKR ${item.Price}</p>
                         <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
                     </div>
                 `;
@@ -533,7 +574,6 @@
             container.innerHTML = html;
         }
         
-        // Helper to avoid XSS
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/[&<>]/g, function(m) {
@@ -546,7 +586,6 @@
             });
         }
         
-        // load data from Google Sheets
         async function loadData() {
             try {
                 const response = await fetch(scriptURL);
@@ -554,12 +593,12 @@
                 globalData = allData;
                 refreshProductDisplay();
             } catch (error) {
-                document.getElementById('dynamic-products').innerHTML = '<div class="no-products">⚠️ Failed to load products. Check connection.</div>';
+                const container = document.getElementById('dynamic-products');
+                if (container) container.innerHTML = '<div class="no-products">⚠️ Failed to load products. Please check your connection.</div>';
                 console.error(error);
             }
         }
         
-        // search event listener
         function initSearch() {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
@@ -570,114 +609,16 @@
             }
         }
         
-        // admin edit setup
-        function setupEdit(originalIndex) {
-            const item = globalData[originalIndex];
-            if (!item) return;
-            document.getElementById('panel-title').innerText = "EDITING PRODUCT";
-            document.getElementById('p-name').value = item.ProductName;
-            document.getElementById('p-price').value = item.Price;
-            document.getElementById('p-img').value = item.ImageURL;
-            document.getElementById('p-link').value = item.ProductLink || '';
-            document.getElementById('p-status').value = item.Status;
-            // sheet row index = header row (1) + originalIndex + 1? originalIndex starts at 0 => row = originalIndex+2
-            document.getElementById('edit-index').value = originalIndex + 2;
-            document.getElementById('uploadBtn').innerText = "UPDATE PRODUCT";
-            document.getElementById('cancel-edit').style.display = "block";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-        
-        function resetForm() {
-            document.getElementById('panel-title').innerText = "ADMIN DASHBOARD (ADD)";
-            document.getElementById('p-name').value = "";
-            document.getElementById('p-price').value = "";
-            document.getElementById('p-img').value = "";
-            document.getElementById('p-link').value = "";
-            document.getElementById('edit-index').value = "";
-            document.getElementById('uploadBtn').innerText = "PUBLISH TO SHEET";
-            document.getElementById('cancel-edit').style.display = "none";
-        }
-        
-        // add or update product
-        async function addProduct() {
-            const pass = document.getElementById('adminPass').value;
-            if (pass !== "1234") { 
-                alert("Wrong Pin! Login properly to Edit/Add."); 
-                return; 
-            } 
-            // set admin logged in true for UI (show edit buttons)
-            if (!isAdminLoggedIn) {
-                isAdminLoggedIn = true;
-                refreshProductDisplay(); // show edit buttons immediately
-            }
-            
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const img = document.getElementById('p-img').value;
-            const link = document.getElementById('p-link').value;
-            const status = document.getElementById('p-status').value;
-            const editRow = document.getElementById('edit-index').value;
-            
-            if (!name || !price || !img) { 
-                alert("Fill all fields (Name, Price, Image)!"); 
-                return; 
-            }
-            
-            const btn = document.getElementById('uploadBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "Processing...";
-            btn.disabled = true;
-            
-            const payload = { 
-                name, price, image: img, link, status,
-                action: editRow ? "edit" : "add",
-                row: editRow || ""
-            };
-            
-            try {
-                await fetch(scriptURL, { method: 'POST', body: JSON.stringify(payload) });
-                alert(editRow ? "✅ Product Updated!" : "✅ Product Added!");
-                location.reload(); // reload to sync with sheet and refresh globalData
-            } catch (e) {
-                alert("Error saving. Reloading page...");
-                location.reload();
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-        
-        function toggleAdmin() {
-            let panel = document.getElementById('admin-panel');
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
-            }
-        }
-        
-        // expose global functions
-        window.setupEdit = setupEdit;
-        window.addProduct = addProduct;
-        window.resetForm = resetForm;
-        window.toggleAdmin = toggleAdmin;
-        
-        // on load finish, ensure search bar works and main content ready but preloader handles visibility
+        // Initialize everything
         document.addEventListener('DOMContentLoaded', () => {
             initSearch();
-            // if somehow preloader not finished but data loaded: but preloader will show main content later
-            // ensure admin panel hidden initially and later if needed
+            bindModalEvents();
         });
         
-        // For admin login after initial load: also refresh display if login via password check from addProduct edge (already covered)
-        // also make sure after admin pass inside addProduct we call refreshProductDisplay.
-        // Additionally we want manual admin toggle that doesn't break anything
-        window.forceAdminRefresh = function() {
-            if (isAdminLoggedIn) refreshProductDisplay();
-        }
-        
-        // in case of any product edit later, refresh after toggling
-        // all good, preserve original google sheets script URL.
+        window.addEventListener('load', () => {
+            startOrbitAnimation();
+            loadData();
+        });
     </script>
 </body>
 </html>
