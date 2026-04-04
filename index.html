@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AM STUDIO | Pro Dashboard</title>
+    <title>AM STUDIO | Pro Dashboard — Collection Edition</title>
     <!-- Font Awesome 6 (free) for watch, bracelet, headphones icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -78,7 +78,7 @@
             transition: opacity 0.4s ease;
         }
 
-        /* navbar, header etc */
+        /* navbar & active link styling */
         .navbar {
             background: #111;
             padding: 15px;
@@ -97,6 +97,19 @@
             font-weight: bold;
             text-transform: uppercase;
             display: inline-block;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .navbar a:hover {
+            color: #f5cb42;
+            text-shadow: 0 0 2px rgba(212,175,55,0.5);
+        }
+
+        .navbar .nav-active {
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 4px;
+            color: #f5cb42;
         }
 
         .header {
@@ -361,6 +374,24 @@
             margin-bottom: 12px;
             display: block;
         }
+        /* category indicator badge */
+        .active-category-badge {
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: -10px;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: #d4af37;
+            background: rgba(212,175,55,0.1);
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 40px;
+        }
+        .badge-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -377,11 +408,12 @@
 
     <!-- MAIN WEBSITE CONTENT -->
     <div id="mainContent">
-        <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS - AM STUDIO</div>
+        <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS — AM STUDIO | EXPLORE MAIN & COLLECTION</div>
 
         <div class="navbar">
-            <a href="#products">Products</a>
-            <a href="https://wa.me/923172722004">Contact</a>
+            <a id="navProductsBtn" class="nav-active">PRODUCTS</a>
+            <a id="navCollectionBtn">COLLECTION</a>
+            <a href="https://wa.me/923172722004">CONTACT</a>
         </div>
 
         <div class="header">
@@ -397,11 +429,16 @@
 
         <!-- SEARCH BAR -->
         <div class="search-section">
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name... (e.g., watch, bracelet)" autocomplete="off">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name... (e.g., watch, bracelet, limited edition)" autocomplete="off">
+        </div>
+        
+        <!-- dynamic active badge -->
+        <div class="badge-wrapper">
+            <div class="active-category-badge" id="activeViewBadge">✦ MAIN PRODUCTS ✦</div>
         </div>
 
         <div id="products">
-            <div id="dynamic-products" class="products-grid">Loading products from AM STUDIO...</div>
+            <div id="dynamic-products" class="products-grid">Loading products from AM STUDIO & COLLECTION...</div>
         </div>
 
         <div class="footer-section">
@@ -425,24 +462,36 @@
     </div>
 
     <script>
-        // ======================= NO ADMIN DASHBOARD - PURE PRODUCT DISPLAY =======================
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec'; 
-        let globalData = [];
+        // ======================= DUAL DATA SOURCE: MAIN PRODUCTS + COLLECTION =======================
+        // 📌 MAIN PRODUCTS SHEETS URL (your existing Google Sheets web app)
+        const MAIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec';
+        
+        // 📌 COLLECTION PRODUCTS URL – Updated with your actual collection sheet endpoint
+        const COLLECTION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwo8g6E-dVWnKnbhKb3_jNTwdG1V3x_VGjlj8cQzASQ6PHQNbi7I9I1TtsiMsLielln8Q/exec';
+        
+        // Data stores
+        let mainProductsData = [];
+        let collectionProductsData = [];
+        let activeCategory = "products"; // 'products' or 'collection'
         let currentSearchTerm = "";
-
-        // Preloader elements
+        
+        // DOM elements
         const preloader = document.getElementById('preloader');
         const mainContent = document.getElementById('mainContent');
         const watchIcon = document.getElementById('watchIcon');
         const braceletIcon = document.getElementById('braceletIcon');
         const headphoneIcon = document.getElementById('headphoneIcon');
         const centralLogoAnim = document.getElementById('centralLogoAnim');
-
-        // ---------- PRELOADER ANIMATION (rotate & merge) ----------
+        const dynamicContainer = document.getElementById('dynamic-products');
+        const searchInput = document.getElementById('searchInput');
+        const navProducts = document.getElementById('navProductsBtn');
+        const navCollection = document.getElementById('navCollectionBtn');
+        const activeBadge = document.getElementById('activeViewBadge');
+        
+        // ---------- PRELOADER ANIMATION (unchanged) ----------
         function startOrbitAnimation() {
             const radius = 115;
             let angle = 0;
-            // set initial positions
             const icons = [watchIcon, braceletIcon, headphoneIcon];
             icons.forEach(icon => {
                 if (icon) icon.style.position = 'absolute';
@@ -484,8 +533,8 @@
                 }, 550);
             }, 1800);
         }
-
-        // ---------- EMAIL MODAL LOGIC (no admin, just stores email) ----------
+        
+        // ---------- EMAIL MODAL LOGIC (preserved) ----------
         const emailModal = document.getElementById('emailModal');
         const visitorEmailInput = document.getElementById('visitorEmail');
         const emailErrorSpan = document.getElementById('emailError');
@@ -520,13 +569,7 @@
             emailErrorSpan.innerText = "";
             localStorage.setItem('am_user_email', email);
             localStorage.setItem('am_email_decision', 'true');
-            
-            if (action === 'login') {
-                console.log(`🔐 LOGIN MODE | Email: ${email} | Welcome back!`);
-                // Optional: you could add a small welcome toast, but no admin panel.
-            } else {
-                console.log(`🛒 GUEST MODE | Email: ${email} | Continue as guest.`);
-            }
+            console.log(`AM STUDIO: ${action.toUpperCase()} mode | Email: ${email}`);
             hideEmailModal();
             return true;
         }
@@ -538,25 +581,39 @@
             if (guestBtn) guestBtn.addEventListener('click', () => handleEmailDecision('guest'));
         }
         
-        // ---------- PRODUCT DISPLAY (no edit buttons, all products Public) ----------
+        // ---------- HELPER: escape HTML ----------
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+                return c;
+            });
+        }
+        
+        // ---------- RENDER BASED ON ACTIVE CATEGORY + SEARCH ----------
         function refreshProductDisplay() {
-            const container = document.getElementById('dynamic-products');
-            if (!globalData.length) {
-                if (container) container.innerHTML = '<div class="no-products">✨ No products loaded yet. Check back soon.</div>';
-                return;
-            }
+            if (!dynamicContainer) return;
             
+            // Choose correct dataset
+            let activeData = (activeCategory === "products") ? mainProductsData : collectionProductsData;
             const searchTerm = currentSearchTerm.toLowerCase().trim();
-            const filteredItems = globalData.filter(item => {
-                // Show only Public products (no hidden items at all)
+            
+            // Filter only Public items and matching search
+            let filteredItems = activeData.filter(item => {
                 if (item.Status !== 'Public') return false;
                 if (searchTerm !== "" && !item.ProductName.toLowerCase().includes(searchTerm)) return false;
                 return true;
             });
             
-            if (!container) return;
             if (filteredItems.length === 0) {
-                container.innerHTML = '<div class="no-products">🔎 No matching products found. Try another keyword.</div>';
+                let noResultMsg = (activeData.length === 0) 
+                    ? "✨ No products found in this category. Please check data source or add items." 
+                    : "🔎 No matching products found. Try another keyword.";
+                dynamicContainer.innerHTML = `<div class="no-products">${noResultMsg}</div>`;
                 return;
             }
             
@@ -571,36 +628,70 @@
                     </div>
                 `;
             });
-            container.innerHTML = html;
+            dynamicContainer.innerHTML = html;
         }
         
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-                return c;
-            });
-        }
-        
-        async function loadData() {
+        // ---------- LOAD MAIN + COLLECTION DATA (parallel fetch) ----------
+        async function fetchJSON(url, datasetName) {
             try {
-                const response = await fetch(scriptURL);
-                const allData = await response.json();
-                globalData = allData;
-                refreshProductDisplay();
-            } catch (error) {
-                const container = document.getElementById('dynamic-products');
-                if (container) container.innerHTML = '<div class="no-products">⚠️ Failed to load products. Please check your connection.</div>';
-                console.error(error);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                console.log(`✅ ${datasetName} loaded: ${data.length} items`);
+                return data;
+            } catch (err) {
+                console.error(`❌ Failed to load ${datasetName}:`, err);
+                return [];
             }
         }
         
-        function initSearch() {
-            const searchInput = document.getElementById('searchInput');
+        async function loadAllData() {
+            if (dynamicContainer) dynamicContainer.innerHTML = '<div class="no-products">⏳ Syncing products & collection items...</div>';
+            
+            // Fetch both sources independently
+            const [mainResult, collectionResult] = await Promise.all([
+                fetchJSON(MAIN_SCRIPT_URL, "Main Products"),
+                fetchJSON(COLLECTION_SCRIPT_URL, "Collection Products")
+            ]);
+            
+            mainProductsData = Array.isArray(mainResult) ? mainResult : [];
+            collectionProductsData = Array.isArray(collectionResult) ? collectionResult : [];
+            
+            // Render initial view (products)
+            refreshProductDisplay();
+        }
+        
+        // ---------- SWITCH BETWEEN PRODUCTS & COLLECTION (tab behavior) ----------
+        function setActiveCategory(category) {
+            activeCategory = category;
+            if (category === "products") {
+                navProducts.classList.add("nav-active");
+                navCollection.classList.remove("nav-active");
+                if (activeBadge) activeBadge.innerText = "✦ MAIN PRODUCTS ✦";
+            } else {
+                navCollection.classList.add("nav-active");
+                navProducts.classList.remove("nav-active");
+                if (activeBadge) activeBadge.innerText = "✦ EXCLUSIVE COLLECTION ✦";
+            }
+            refreshProductDisplay();
+        }
+        
+        function initNavbarEvents() {
+            if (navProducts) {
+                navProducts.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setActiveCategory("products");
+                });
+            }
+            if (navCollection) {
+                navCollection.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setActiveCategory("collection");
+                });
+            }
+        }
+        
+        function initSearchEvents() {
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     currentSearchTerm = e.target.value;
@@ -609,15 +700,20 @@
             }
         }
         
-        // Initialize everything
-        document.addEventListener('DOMContentLoaded', () => {
-            initSearch();
-            bindModalEvents();
-        });
-        
+        // ---------- INITIALIZE EVERYTHING ----------
         window.addEventListener('load', () => {
             startOrbitAnimation();
-            loadData();
+            bindModalEvents();
+            initNavbarEvents();
+            initSearchEvents();
+            loadAllData();
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            if (navProducts) navProducts.classList.add("nav-active");
+            if (navCollection) navCollection.classList.remove("nav-active");
+            if (activeBadge) activeBadge.innerText = "✦ MAIN PRODUCTS ✦";
+            activeCategory = "products";
         });
     </script>
 </body>
