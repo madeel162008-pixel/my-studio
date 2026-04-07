@@ -3,94 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>AM STUDIO | Pro Dashboard — Collection Edition (with Comments & Details)</title>
-    <!-- Font Awesome 6 (free) -->
+    <title>AM STUDIO | Pro Dashboard — Collection Edition (Global Comments + Profile)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* ---------- PRELOADER (same as original) ---------- */
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .animation-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .orbit-icon {
-            position: absolute;
-            font-size: 48px;
-            color: #d4af37;
-            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6));
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            will-change: transform;
-        }
-        .central-logo {
-            width: 110px;
-            height: auto;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.5s ease-out;
-            border-radius: 50%;
-            background: #000;
-            padding: 5px;
-        }
-        .logo-reveal {
-            opacity: 1 !important;
-            transform: scale(1) !important;
-        }
-        #mainContent {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        /* navbar & other existing styles (preserved) */
-        .navbar {
-            background: #111;
-            padding: 15px;
-            border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            text-align: center;
-        }
-        .navbar a {
-            color: #d4af37;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: inline-block;
-            transition: 0.2s;
-            cursor: pointer;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #000000; color: #ffffff; font-family: 'Arial', sans-serif; overflow-x: hidden; }
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s ease; }
+        .animation-container { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; }
+        .orbit-icon { position: absolute; font-size: 48px; color: #d4af37; filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.6)); transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1); will-change: transform; }
+        .central-logo { width: 110px; height: auto; opacity: 0; transform: scale(0.5); transition: all 0.5s ease-out; border-radius: 50%; background: #000; padding: 5px; }
+        .logo-reveal { opacity: 1 !important; transform: scale(1) !important; }
+        #mainContent { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .navbar { background: #111; padding: 15px; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 100; text-align: center; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .navbar a { color: #d4af37; text-decoration: none; margin: 0 15px; font-size: 14px; font-weight: bold; text-transform: uppercase; display: inline-block; transition: 0.2s; cursor: pointer; }
         .navbar a:hover { color: #f5cb42; text-shadow: 0 0 2px rgba(212,175,55,0.5); }
         .navbar .nav-active { border-bottom: 2px solid #d4af37; padding-bottom: 4px; color: #f5cb42; }
         .header { border-bottom: 2px solid #d4af37; padding: 30px 20px; margin-bottom: 30px; text-align: center; }
@@ -115,8 +40,6 @@
         .footer-section { background: #111; padding: 40px 20px; border-top: 1px solid #333; text-align: center; margin-top: 40px; }
         @media (max-width: 700px) { .products-grid { grid-template-columns: 1fr; } .no-products { grid-column: span 1; } }
         .no-products { text-align: center; padding: 50px; font-size: 18px; color: #aaa; grid-column: span 2; }
-
-        /* ---------- EMAIL MODAL (unchanged) ---------- */
         .email-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(8px); z-index: 30000; align-items: center; justify-content: center; }
         .email-modal-content { background: #0c0c0c; border: 2px solid #d4af37; border-radius: 28px; padding: 35px 28px; width: 90%; max-width: 420px; text-align: center; animation: fadeSlideUp 0.4s ease-out; }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
@@ -126,44 +49,9 @@
         .modal-btn { padding: 12px 0; font-weight: bold; border-radius: 50px; cursor: pointer; border: none; }
         .btn-login { background: #d4af37; color: #000; }
         .btn-guest { background: transparent; color: #d4af37; border: 1px solid #d4af37; }
-
-        /* ---------- PRODUCT DETAIL MODAL (NEW) ---------- */
-        .product-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(5px);
-            z-index: 40000;
-            align-items: center;
-            justify-content: center;
-            overflow-y: auto;
-            padding: 30px 20px;
-        }
-        .product-modal-content {
-            background: #0a0a0a;
-            border: 2px solid #d4af37;
-            border-radius: 28px;
-            max-width: 1000px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 25px;
-            position: relative;
-            animation: fadeSlideUp 0.3s ease;
-        }
-        .close-modal {
-            position: absolute;
-            top: 18px;
-            right: 25px;
-            font-size: 32px;
-            color: #d4af37;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .product-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 40000; align-items: center; justify-content: center; overflow-y: auto; padding: 30px 20px; }
+        .product-modal-content { background: #0a0a0a; border: 2px solid #d4af37; border-radius: 28px; max-width: 1000px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 25px; position: relative; animation: fadeSlideUp 0.3s ease; }
+        .close-modal { position: absolute; top: 18px; right: 25px; font-size: 32px; color: #d4af37; cursor: pointer; transition: 0.2s; }
         .close-modal:hover { color: #f5cb42; transform: scale(1.1); }
         .modal-product-title { font-size: 28px; color: #d4af37; margin-bottom: 15px; border-left: 4px solid #d4af37; padding-left: 15px; }
         .gallery-area { display: flex; flex-wrap: wrap; gap: 20px; margin: 20px 0; }
@@ -175,8 +63,6 @@
         .product-description { background: #111; padding: 18px; border-radius: 20px; margin: 20px 0; color: #ddd; line-height: 1.5; }
         .product-price-modal { font-size: 24px; font-weight: bold; color: #d4af37; margin: 10px 0; }
         .order-btn-modal { display: inline-block; background: #d4af37; color: #000; padding: 10px 28px; border-radius: 40px; text-decoration: none; font-weight: bold; margin-top: 10px; }
-        
-        /* Comments section */
         .comments-section { margin-top: 35px; border-top: 1px solid #333; padding-top: 20px; }
         .comments-title { font-size: 22px; color: #d4af37; margin-bottom: 15px; }
         .comment-list { max-height: 280px; overflow-y: auto; margin-bottom: 20px; background: #111; border-radius: 20px; padding: 12px; }
@@ -191,322 +77,409 @@
         .submit-comment-btn:hover { background: #f5cb42; }
         .comment-status { font-size: 12px; color: #aaa; margin-top: 6px; }
         @media (max-width: 700px) { .thumb-list { flex-direction: row; flex-wrap: wrap; } .thumb-img { width: 60px; height: 60px; } }
+        
+        /* Profile Modal Styles */
+        .profile-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); z-index: 45000; align-items: center; justify-content: center; overflow-y: auto; padding: 30px 20px; }
+        .profile-modal-content { background: #0a0a0a; border: 2px solid #d4af37; border-radius: 28px; max-width: 500px; width: 100%; padding: 30px; position: relative; animation: fadeSlideUp 0.3s ease; text-align: center; }
+        .profile-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #d4af37; margin-bottom: 20px; background: #222; }
+        .profile-field { margin: 20px 0; text-align: left; }
+        .profile-field label { display: block; color: #d4af37; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+        .profile-field input, .profile-field .email-display { width: 100%; padding: 12px; background: #1e1e1e; border: 1px solid #d4af37; border-radius: 40px; color: white; font-size: 14px; outline: none; }
+        .profile-field .email-display { background: #2a2a2a; cursor: not-allowed; }
+        .profile-actions { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .profile-btn { background: #d4af37; color: #000; border: none; padding: 10px 25px; border-radius: 40px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .profile-btn:hover { background: #f5cb42; transform: scale(0.98); }
+        .profile-btn-secondary { background: transparent; border: 1px solid #d4af37; color: #d4af37; }
+        .profile-btn-secondary:hover { background: rgba(212,175,55,0.1); }
+        .file-input-label { background: #333; display: inline-block; padding: 8px 16px; border-radius: 40px; cursor: pointer; margin-top: 10px; font-size: 12px; }
+        #profilePicInput { display: none; }
+        .profile-note { font-size: 12px; color: #aaa; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="preloader">
-        <div class="animation-container" id="animContainer">
-            <i class="orbit-icon fas fa-clock" id="watchIcon"></i>
-            <i class="orbit-icon fas fa-gem" id="braceletIcon"></i>
-            <i class="orbit-icon fas fa-headphones" id="headphoneIcon"></i>
-            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="AM STUDIO LOGO" class="central-logo" id="centralLogoAnim">
-        </div>
+<div id="preloader">
+    <div class="animation-container">
+        <i class="orbit-icon fas fa-clock" id="watchIcon"></i>
+        <i class="orbit-icon fas fa-gem" id="braceletIcon"></i>
+        <i class="orbit-icon fas fa-headphones" id="headphoneIcon"></i>
+        <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="AM STUDIO LOGO" class="central-logo" id="centralLogoAnim">
     </div>
+</div>
 
-    <div id="mainContent">
-        <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS — AM STUDIO | EXPLORE MAIN & COLLECTION</div>
-        <div class="navbar">
-            <a id="navProductsBtn" class="nav-active">PRODUCTS</a>
-            <a id="navCollectionBtn">COLLECTION</a>
-            <a href="https://wa.me/923172722004">CONTACT</a>
-        </div>
-        <div class="header">
-            <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo">
-            <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
-        </div>
-        <div class="category-container">
-            <div class="cat-box">HOME DECOR</div><div class="cat-box">FASHION</div><div class="cat-box">SMART TECH</div>
-        </div>
-        <div class="search-section">
-            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name..." autocomplete="off">
-        </div>
-        <div class="badge-wrapper"><div class="active-category-badge" id="activeViewBadge">✦ MAIN PRODUCTS ✦</div></div>
-        <div id="products"><div id="dynamic-products" class="products-grid">Loading products...</div></div>
-        <div class="footer-section"><h3>ABOUT AM STUDIO</h3><p style="color: #aaa; font-size: 14px;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p></div>
+<div id="mainContent">
+    <div id="discount-bar">PREMIUM LIFESTYLE PRODUCTS — AM STUDIO | GLOBAL COMMENTS ENABLED</div>
+    <div class="navbar">
+        <a id="navProductsBtn" class="nav-active">PRODUCTS</a>
+        <a id="navCollectionBtn">COLLECTION</a>
+        <a href="https://wa.me/923172722004">CONTACT</a>
+        <a id="navMeBtn">👤 ME</a>
     </div>
-
-    <!-- Email Modal -->
-    <div id="emailModal" class="email-modal"><div class="email-modal-content"><h3>✦ AM STUDIO ✦</h3><p>Enter your email to unlock exclusive updates</p><input type="email" id="visitorEmail" placeholder="Your email address"><div id="emailError" class="error-msg"></div><div class="modal-buttons"><button class="modal-btn btn-login" id="modalLoginBtn">LOGIN</button><button class="modal-btn btn-guest" id="modalGuestBtn">CONTINUE SHOPPING</button></div></div></div>
-
-    <!-- Product Detail + Comments Modal -->
-    <div id="productDetailModal" class="product-modal">
-        <div class="product-modal-content">
-            <span class="close-modal" id="closeModalBtn">&times;</span>
-            <div id="modalDynamicContent"></div>
-        </div>
+    <div class="header">
+        <img src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Logo" class="logo">
+        <p style="color:#d4af37; letter-spacing: 2px; margin-top: 10px; font-size: 14px;">QUALITY MEETS LIFESTYLE</p>
     </div>
+    <div class="category-container">
+        <div class="cat-box">HOME DECOR</div><div class="cat-box">FASHION</div><div class="cat-box">SMART TECH</div>
+    </div>
+    <div class="search-section">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search products by name..." autocomplete="off">
+    </div>
+    <div class="badge-wrapper"><div class="active-category-badge" id="activeViewBadge">✦ MAIN PRODUCTS ✦</div></div>
+    <div id="products"><div id="dynamic-products" class="products-grid">Loading products...</div></div>
+    <div class="footer-section"><h3>ABOUT AM STUDIO</h3><p style="color: #aaa; font-size: 14px;">© 2026 AM STUDIO | KARACHI, PAKISTAN</p></div>
+</div>
 
-    <script>
-        // ======================= CONFIGURATION =======================
-        const MAIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec';
-        const COLLECTION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwo8g6E-dVWnKnbhKb3_jNTwdG1V3x_VGjlj8cQzASQ6PHQNbi7I9I1TtsiMsLielln8Q/exec';
-        
-        // *** COMMENT BACKEND CONFIGURATION ***
-        const REAL_COMMENT_API_URL = '';  // Set your Apps Script URL here (e.g., 'https://script.google.com/macros/s/.../exec')
-        const USE_LOCAL_FALLBACK = true;
-        
-        let mainProductsData = [];
-        let collectionProductsData = [];
-        let activeCategory = "products";
-        let currentSearchTerm = "";
-        
-        // DOM elements
-        const preloader = document.getElementById('preloader');
-        const mainContent = document.getElementById('mainContent');
-        const watchIcon = document.getElementById('watchIcon');
-        const braceletIcon = document.getElementById('braceletIcon');
-        const headphoneIcon = document.getElementById('headphoneIcon');
-        const centralLogoAnim = document.getElementById('centralLogoAnim');
-        const dynamicContainer = document.getElementById('dynamic-products');
-        const searchInput = document.getElementById('searchInput');
-        const navProducts = document.getElementById('navProductsBtn');
-        const navCollection = document.getElementById('navCollectionBtn');
-        const activeBadge = document.getElementById('activeViewBadge');
-        const modal = document.getElementById('productDetailModal');
-        const modalContentDiv = document.getElementById('modalDynamicContent');
-        
-        // Preloader animation (unchanged)
-        function startOrbitAnimation() {
-            const radius = 115;
-            let angle = 0;
-            const icons = [watchIcon, braceletIcon, headphoneIcon];
-            const orbitInterval = setInterval(() => {
-                if (!preloader || preloader.style.display === 'none') { clearInterval(orbitInterval); return; }
-                angle = (angle + 8) % 360;
-                const anglesPos = [0, 120, 240];
-                icons.forEach((icon, idx) => {
-                    let finalAngle = anglesPos[idx] + angle;
-                    let radian = finalAngle * Math.PI / 180;
-                    let x = Math.cos(radian) * radius;
-                    let y = Math.sin(radian) * radius;
-                    icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-                });
-            }, 45);
-            setTimeout(() => {
-                clearInterval(orbitInterval);
-                icons.forEach(icon => { icon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)"; icon.style.transform = "translate(-50%, -50%) scale(0.1)"; icon.style.opacity = "0"; });
-                centralLogoAnim.classList.add('logo-reveal');
-                setTimeout(() => { preloader.style.opacity = "0"; setTimeout(() => { preloader.style.display = "none"; mainContent.style.display = "block"; setTimeout(() => { mainContent.style.opacity = "1"; showEmailModalIfNewUser(); }, 30); }, 500); }, 550);
-            }, 1800);
+<div id="emailModal" class="email-modal"><div class="email-modal-content"><h3>✦ AM STUDIO ✦</h3><p>Enter your email to unlock exclusive updates</p><input type="email" id="visitorEmail" placeholder="Your email address"><div id="emailError" class="error-msg"></div><div class="modal-buttons"><button class="modal-btn btn-login" id="modalLoginBtn">LOGIN</button><button class="modal-btn btn-guest" id="modalGuestBtn">CONTINUE SHOPPING</button></div></div></div>
+
+<div id="productDetailModal" class="product-modal">
+    <div class="product-modal-content">
+        <span class="close-modal" id="closeModalBtn">&times;</span>
+        <div id="modalDynamicContent"></div>
+    </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profileModal" class="profile-modal">
+    <div class="profile-modal-content">
+        <span class="close-modal" id="closeProfileBtn">&times;</span>
+        <h3 style="color:#d4af37; margin-bottom:20px;">👤 MY PROFILE</h3>
+        <img id="profileAvatar" class="profile-avatar" src="https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png" alt="Avatar">
+        <div class="profile-field">
+            <label>📸 Profile Picture</label>
+            <label class="file-input-label">Choose Image<input type="file" id="profilePicInput" accept="image/*"></label>
+        </div>
+        <div class="profile-field">
+            <label>🏷️ Nickname</label>
+            <input type="text" id="profileNickname" placeholder="Your nickname">
+        </div>
+        <div class="profile-field">
+            <label>📧 Email Address</label>
+            <input type="email" id="profileEmail" placeholder="Your email">
+        </div>
+        <div class="profile-actions">
+            <button id="saveProfileBtn" class="profile-btn">SAVE CHANGES</button>
+            <button id="cancelProfileBtn" class="profile-btn profile-btn-secondary">CANCEL</button>
+        </div>
+        <div class="profile-note">💡 Changes are saved in your browser (localStorage).</div>
+    </div>
+</div>
+
+<script>
+    // ======================= CONFIGURATION =======================
+    const MAIN_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxELEbzbD6f7kMW4bXPNnZeOrEAVDgqRnZ9OUJbERuBqa7bZaQhwCxVnuDcMJJU_XcnIA/exec';
+    const COLLECTION_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwo8g6E-dVWnKnbhKb3_jNTwdG1V3x_VGjlj8cQzASQ6PHQNbi7I9I1TtsiMsLielln8Q/exec';
+    const REAL_COMMENT_API_URL = 'https://script.google.com/macros/s/AKfycbwsWHVcbWf0JnG4ZCQgIjz9t6Cee1Dy41G2nwfIStM-fcuZv3YQC7QoMDk-i_fl3XlfBw/exec';
+    const USE_LOCAL_FALLBACK = false;
+    
+    let mainProductsData = [];
+    let collectionProductsData = [];
+    let activeCategory = "products";
+    let currentSearchTerm = "";
+    
+    // DOM elements
+    const preloader = document.getElementById('preloader');
+    const mainContent = document.getElementById('mainContent');
+    const watchIcon = document.getElementById('watchIcon');
+    const braceletIcon = document.getElementById('braceletIcon');
+    const headphoneIcon = document.getElementById('headphoneIcon');
+    const centralLogoAnim = document.getElementById('centralLogoAnim');
+    const dynamicContainer = document.getElementById('dynamic-products');
+    const searchInput = document.getElementById('searchInput');
+    const navProducts = document.getElementById('navProductsBtn');
+    const navCollection = document.getElementById('navCollectionBtn');
+    const navMe = document.getElementById('navMeBtn');
+    const activeBadge = document.getElementById('activeViewBadge');
+    const modal = document.getElementById('productDetailModal');
+    const modalContentDiv = document.getElementById('modalDynamicContent');
+    const profileModal = document.getElementById('profileModal');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileNickname = document.getElementById('profileNickname');
+    const profileEmail = document.getElementById('profileEmail');
+    const profilePicInput = document.getElementById('profilePicInput');
+    const saveProfileBtn = document.getElementById('saveProfileBtn');
+    const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+    const closeProfileBtn = document.getElementById('closeProfileBtn');
+    
+    // ======================= PROFILE MANAGEMENT (localStorage) =======================
+    function loadProfile() {
+        const savedNickname = localStorage.getItem('am_nickname') || '';
+        const savedEmail = localStorage.getItem('am_user_email') || '';
+        const savedAvatar = localStorage.getItem('am_avatar') || 'https://i.postimg.cc/hGvvPXwS/ei-1771101710052-removebg-preview.png';
+        profileNickname.value = savedNickname;
+        profileEmail.value = savedEmail;
+        profileAvatar.src = savedAvatar;
+    }
+    
+    function saveProfile() {
+        const nickname = profileNickname.value.trim();
+        const email = profileEmail.value.trim();
+        if (email && !/^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email)) {
+            alert("Please enter a valid email address.");
+            return;
         }
-        
-        // Email Modal (preserved)
-        const emailModal = document.getElementById('emailModal');
-        function isEmailDecisionMade() { return localStorage.getItem('am_email_decision') === 'true'; }
-        function showEmailModalIfNewUser() { if (!isEmailDecisionMade() && emailModal) { document.body.style.overflow = 'hidden'; emailModal.style.display = 'flex'; } }
-        function hideEmailModal() { emailModal.style.display = 'none'; document.body.style.overflow = ''; }
-        function validateEmail(email) { return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email); }
-        function handleEmailDecision(action) { const email = visitorEmailInput.value.trim(); if (!email || !validateEmail(email)) { emailErrorSpan.innerText = "⚠️ Valid email required."; return false; } localStorage.setItem('am_user_email', email); localStorage.setItem('am_email_decision', 'true'); hideEmailModal(); return true; }
-        document.getElementById('modalLoginBtn')?.addEventListener('click', () => handleEmailDecision('login'));
-        document.getElementById('modalGuestBtn')?.addEventListener('click', () => handleEmailDecision('guest'));
-        const visitorEmailInput = document.getElementById('visitorEmail');
-        const emailErrorSpan = document.getElementById('emailError');
-        
-        // Helper: generate unique product ID (source_type + slugified name)
-        function generateProductId(source, productName, price) {
-            const slug = productName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 50);
-            return `${source}_${slug}_${price}`;
+        if (nickname) localStorage.setItem('am_nickname', nickname);
+        else localStorage.removeItem('am_nickname');
+        if (email) {
+            localStorage.setItem('am_user_email', email);
+            localStorage.setItem('am_email_decision', 'true');
+        } else {
+            localStorage.removeItem('am_user_email');
         }
-        
-        // Enhance product data: parse additional images & fetch DETAILED DESCRIPTION from Google Sheets
-        // IMPORTANT: In your Google Sheet, add a column named "DetailedDescription" (exactly)
-        // and write the full product description there. The script will automatically use it.
-        function enrichProduct(product, sourceType, index) {
-            let additionalImages = [];
-            if (product.AdditionalImages && typeof product.AdditionalImages === 'string') {
-                additionalImages = product.AdditionalImages.split(',').map(url => url.trim()).filter(u => u.startsWith('http'));
-            }
-            if (additionalImages.length === 0 && product.ImageURL) additionalImages = [product.ImageURL];
-            
-            // PRIORITY: DetailedDescription column from Google Sheets
-            // If not present, fallback to Description, then a default message.
-            let detailedDescription = product.DetailedDescription || product.Description || "Premium quality lifestyle product from AM STUDIO. Crafted with elegance and precision.";
-            
-            return {
-                ...product,
-                source: sourceType,
-                productId: generateProductId(sourceType, product.ProductName, product.Price),
-                additionalImages: additionalImages,
-                detailedDesc: detailedDescription,   // This will appear in the modal
-                rawPrice: product.Price,
+        // Avatar is saved on file change separately
+        alert("Profile saved!");
+        // Optionally update comment name fields that are open
+        location.reload(); // Simple reload to refresh comment name fields
+    }
+    
+    function handleProfilePicUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                localStorage.setItem('am_avatar', base64);
+                profileAvatar.src = base64;
+                alert("Profile picture updated. Don't forget to click SAVE CHANGES.");
             };
+            reader.readAsDataURL(file);
         }
-        
-        // Fetch data
-        async function fetchJSON(url, name) { try { const res = await fetch(url); if (!res.ok) throw new Error(); const data = await res.json(); console.log(`✅ ${name}: ${data.length}`); return data; } catch(e) { console.error(`❌ ${name} failed`, e); return []; } }
-        
-        async function loadAllData() {
-            dynamicContainer.innerHTML = '<div class="no-products">⏳ Syncing products & collection...</div>';
-            const [mainRaw, collectionRaw] = await Promise.all([fetchJSON(MAIN_SCRIPT_URL, "Main"), fetchJSON(COLLECTION_SCRIPT_URL, "Collection")]);
-            mainProductsData = (Array.isArray(mainRaw) ? mainRaw : []).map((p, idx) => enrichProduct(p, 'main', idx));
-            collectionProductsData = (Array.isArray(collectionRaw) ? collectionRaw : []).map((p, idx) => enrichProduct(p, 'collection', idx));
-            refreshProductDisplay();
-        }
-        
-        // Render grid
-        function refreshProductDisplay() {
-            let activeData = (activeCategory === "products") ? mainProductsData : collectionProductsData;
-            const searchTerm = currentSearchTerm.toLowerCase().trim();
-            let filtered = activeData.filter(item => item.Status === 'Public' && (searchTerm === "" || item.ProductName.toLowerCase().includes(searchTerm)));
-            if (filtered.length === 0) { dynamicContainer.innerHTML = `<div class="no-products">✨ No products found.</div>`; return; }
-            let html = '';
-            filtered.forEach(item => {
-                html += `
-                    <div class="product-card">
-                        <h2 style="color: #d4af37; font-size: 1.4rem;">${escapeHtml(item.ProductName)}</h2>
-                        <img src="${item.ImageURL}" class="img" data-product-id='${item.productId}' data-source='${item.source}' data-index='${item.productId}' onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
-                        <p style="font-weight:bold; font-size:1.2rem;">PKR ${item.Price}</p>
-                        <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
-                        <button class="btn details-btn" data-product-id='${item.productId}'>📖 DETAILS & COMMENTS</button>
-                    </div>
-                `;
+    }
+    
+    function openProfileModal() {
+        loadProfile();
+        profileModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeProfileModal() {
+        profileModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    profilePicInput.addEventListener('change', handleProfilePicUpload);
+    saveProfileBtn.addEventListener('click', saveProfile);
+    cancelProfileBtn.addEventListener('click', closeProfileModal);
+    closeProfileBtn.addEventListener('click', closeProfileModal);
+    window.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
+    navMe.addEventListener('click', (e) => { e.preventDefault(); openProfileModal(); });
+    
+    // Preloader animation
+    function startOrbitAnimation() {
+        const radius = 115;
+        let angle = 0;
+        const icons = [watchIcon, braceletIcon, headphoneIcon];
+        const orbitInterval = setInterval(() => {
+            if (!preloader || preloader.style.display === 'none') { clearInterval(orbitInterval); return; }
+            angle = (angle + 8) % 360;
+            const anglesPos = [0, 120, 240];
+            icons.forEach((icon, idx) => {
+                let finalAngle = anglesPos[idx] + angle;
+                let radian = finalAngle * Math.PI / 180;
+                let x = Math.cos(radian) * radius;
+                let y = Math.sin(radian) * radius;
+                icon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
             });
-            dynamicContainer.innerHTML = html;
-            // attach event listeners to images and detail buttons
-            document.querySelectorAll('.product-card .img').forEach(img => {
-                img.addEventListener('click', (e) => {
-                    const pid = img.getAttribute('data-product-id');
-                    openProductModalById(pid);
-                });
-            });
-            document.querySelectorAll('.details-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const pid = btn.getAttribute('data-product-id');
-                    openProductModalById(pid);
-                });
-            });
+        }, 45);
+        setTimeout(() => {
+            clearInterval(orbitInterval);
+            icons.forEach(icon => { icon.style.transition = "all 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.2)"; icon.style.transform = "translate(-50%, -50%) scale(0.1)"; icon.style.opacity = "0"; });
+            centralLogoAnim.classList.add('logo-reveal');
+            setTimeout(() => { preloader.style.opacity = "0"; setTimeout(() => { preloader.style.display = "none"; mainContent.style.display = "block"; setTimeout(() => { mainContent.style.opacity = "1"; showEmailModalIfNewUser(); }, 30); }, 500); }, 550);
+        }, 1800);
+    }
+    
+    // Email Modal (preserved)
+    const emailModal = document.getElementById('emailModal');
+    function isEmailDecisionMade() { return localStorage.getItem('am_email_decision') === 'true'; }
+    function showEmailModalIfNewUser() { if (!isEmailDecisionMade() && emailModal) { document.body.style.overflow = 'hidden'; emailModal.style.display = 'flex'; } }
+    function hideEmailModal() { emailModal.style.display = 'none'; document.body.style.overflow = ''; }
+    function validateEmail(email) { return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(email); }
+    function handleEmailDecision(action) { const email = visitorEmailInput.value.trim(); if (!email || !validateEmail(email)) { emailErrorSpan.innerText = "⚠️ Valid email required."; return false; } localStorage.setItem('am_user_email', email); localStorage.setItem('am_email_decision', 'true'); hideEmailModal(); return true; }
+    document.getElementById('modalLoginBtn')?.addEventListener('click', () => handleEmailDecision('login'));
+    document.getElementById('modalGuestBtn')?.addEventListener('click', () => handleEmailDecision('guest'));
+    const visitorEmailInput = document.getElementById('visitorEmail');
+    const emailErrorSpan = document.getElementById('emailError');
+    
+    // Helper: generate unique product ID
+    function generateProductId(source, productName, price) {
+        const slug = productName.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 50);
+        return `${source}_${slug}_${price}`;
+    }
+    
+    // Enrich product with additional images and detailed description from Google Sheets
+    function enrichProduct(product, sourceType, index) {
+        let additionalImages = [];
+        if (product.AdditionalImages && typeof product.AdditionalImages === 'string') {
+            additionalImages = product.AdditionalImages.split(',').map(url => url.trim()).filter(u => u.startsWith('http'));
         }
-        
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-        
-        // Get full product object by ID
-        function getProductById(productId) {
-            const all = [...mainProductsData, ...collectionProductsData];
-            return all.find(p => p.productId === productId);
-        }
-        
-        // ---------- COMMENT SYSTEM (API + fallback localStorage) ----------
-        async function fetchComments(productId) {
-            if (REAL_COMMENT_API_URL) {
-                try {
-                    const res = await fetch(`${REAL_COMMENT_API_URL}?productId=${encodeURIComponent(productId)}`);
-                    if (res.ok) return await res.json();
-                    return [];
-                } catch(e) { console.warn("Comment API fetch error", e); return []; }
-            } else if (USE_LOCAL_FALLBACK) {
-                const storageKey = `comments_${productId}`;
-                const stored = localStorage.getItem(storageKey);
-                return stored ? JSON.parse(stored) : [];
-            }
-            return [];
-        }
-        
-        async function postComment(productId, userName, commentText) {
-            if (!userName.trim()) userName = "Anonymous";
-            if (!commentText.trim()) return false;
-            const newComment = { userName: userName.trim(), commentText: commentText.trim(), timestamp: new Date().toISOString(), productId };
-            if (REAL_COMMENT_API_URL) {
-                try {
-                    const res = await fetch(REAL_COMMENT_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ productId, userName: newComment.userName, commentText: newComment.commentText }) });
-                    return res.ok;
-                } catch(e) { return false; }
-            } else if (USE_LOCAL_FALLBACK) {
-                const storageKey = `comments_${productId}`;
-                const existing = await fetchComments(productId);
-                existing.push(newComment);
-                localStorage.setItem(storageKey, JSON.stringify(existing));
-                return true;
-            }
-            return false;
-        }
-        
-        // Open modal and load product details + comments
-        async function openProductModalById(productId) {
-            const product = getProductById(productId);
-            if (!product) return;
-            // Build modal content
-            const images = product.additionalImages && product.additionalImages.length ? product.additionalImages : [product.ImageURL];
-            const mainImg = images[0];
-            const thumbnailsHtml = images.slice(1).map(img => `<img src="${img}" class="thumb-img" onclick="document.getElementById('modalMainImage').src='${img}'">`).join('');
-            const modalHtml = `
-                <div>
-                    <div class="modal-product-title">${escapeHtml(product.ProductName)}</div>
-                    <div class="gallery-area">
-                        <div class="main-gallery-img"><img id="modalMainImage" src="${mainImg}" style="width:100%; border-radius:16px;"></div>
-                        <div class="thumb-list">${thumbnailsHtml}</div>
-                    </div>
-                    <div class="product-description">📝 <strong>Detailed Description</strong><br>${escapeHtml(product.detailedDesc)}</div>
-                    <div class="product-price-modal">PKR ${product.Price}</div>
-                    <a href="${product.ProductLink || '#'}" target="_blank" class="order-btn-modal">🛒 ORDER NOW</a>
-                    <div class="comments-section" id="commentsSection_${product.productId}">
-                        <div class="comments-title">💬 Customer Comments</div>
-                        <div id="commentList_${product.productId}" class="comment-list">Loading comments...</div>
-                        <div class="add-comment">
-                            <input type="text" id="commentName_${product.productId}" class="name-input" placeholder="Your name (optional)" value="${localStorage.getItem('am_user_email')?.split('@')[0] || 'Guest'}">
-                            <textarea id="commentText_${product.productId}" class="comment-input" rows="2" placeholder="Share your thoughts about this product..."></textarea>
-                            <button class="submit-comment-btn" data-pid="${product.productId}">💬 Post Comment</button>
-                        </div>
-                        <div id="commentStatus_${product.productId}" class="comment-status"></div>
-                    </div>
+        if (additionalImages.length === 0 && product.ImageURL) additionalImages = [product.ImageURL];
+        const detailedDescription = product.DetailedDescription || product.Description || "Premium quality lifestyle product from AM STUDIO. Crafted with elegance and precision.";
+        return {
+            ...product,
+            source: sourceType,
+            productId: generateProductId(sourceType, product.ProductName, product.Price),
+            additionalImages: additionalImages,
+            detailedDesc: detailedDescription,
+            rawPrice: product.Price,
+        };
+    }
+    
+    // Fetch product data
+    async function fetchJSON(url, name) { try { const res = await fetch(url); if (!res.ok) throw new Error(); const data = await res.json(); console.log(`✅ ${name}: ${data.length}`); return data; } catch(e) { console.error(`❌ ${name} failed`, e); return []; } }
+    
+    async function loadAllData() {
+        dynamicContainer.innerHTML = '<div class="no-products">⏳ Syncing products & collection...</div>';
+        const [mainRaw, collectionRaw] = await Promise.all([fetchJSON(MAIN_SCRIPT_URL, "Main"), fetchJSON(COLLECTION_SCRIPT_URL, "Collection")]);
+        mainProductsData = (Array.isArray(mainRaw) ? mainRaw : []).map((p, idx) => enrichProduct(p, 'main', idx));
+        collectionProductsData = (Array.isArray(collectionRaw) ? collectionRaw : []).map((p, idx) => enrichProduct(p, 'collection', idx));
+        refreshProductDisplay();
+    }
+    
+    // Render product grid
+    function refreshProductDisplay() {
+        let activeData = (activeCategory === "products") ? mainProductsData : collectionProductsData;
+        const searchTerm = currentSearchTerm.toLowerCase().trim();
+        let filtered = activeData.filter(item => item.Status === 'Public' && (searchTerm === "" || item.ProductName.toLowerCase().includes(searchTerm)));
+        if (filtered.length === 0) { dynamicContainer.innerHTML = `<div class="no-products">✨ No products found.</div>`; return; }
+        let html = '';
+        filtered.forEach(item => {
+            html += `
+                <div class="product-card">
+                    <h2 style="color: #d4af37; font-size: 1.4rem;">${escapeHtml(item.ProductName)}</h2>
+                    <img src="${item.ImageURL}" class="img" data-product-id='${item.productId}' onerror="this.src='https://i.postimg.cc/RWtzJxKz/IMG-20260116-WA0014.jpg'">
+                    <p style="font-weight:bold; font-size:1.2rem;">PKR ${item.Price}</p>
+                    <a href="${item.ProductLink || '#'}" target="_blank" class="btn">ORDER NOW</a>
+                    <button class="btn details-btn" data-product-id='${item.productId}'>📖 DETAILS & COMMENTS</button>
                 </div>
             `;
-            modalContentDiv.innerHTML = modalHtml;
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            // Load and display comments
-            const loadAndRenderComments = async () => {
-                const comments = await fetchComments(product.productId);
-                const commentContainer = document.getElementById(`commentList_${product.productId}`);
-                if (commentContainer) {
-                    if (comments.length === 0) { commentContainer.innerHTML = '<div class="single-comment" style="text-align:center;">✨ No comments yet. Be the first to review!</div>'; }
-                    else {
-                        commentContainer.innerHTML = comments.map(c => `<div class="single-comment"><div class="comment-user">👤 ${escapeHtml(c.userName)}</div><div class="comment-text">${escapeHtml(c.commentText)}</div><div class="comment-date">${new Date(c.timestamp).toLocaleString()}</div></div>`).join('');
-                    }
+        });
+        dynamicContainer.innerHTML = html;
+        document.querySelectorAll('.product-card .img').forEach(img => {
+            img.addEventListener('click', () => openProductModalById(img.getAttribute('data-product-id')));
+        });
+        document.querySelectorAll('.details-btn').forEach(btn => {
+            btn.addEventListener('click', () => openProductModalById(btn.getAttribute('data-product-id')));
+        });
+    }
+    
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    
+    function getProductById(productId) {
+        const all = [...mainProductsData, ...collectionProductsData];
+        return all.find(p => p.productId === productId);
+    }
+    
+    // ---------- GLOBAL COMMENT API ----------
+    async function fetchComments(productId) {
+        if (!REAL_COMMENT_API_URL) return [];
+        try {
+            const res = await fetch(`${REAL_COMMENT_API_URL}?productId=${encodeURIComponent(productId)}`);
+            if (res.ok) return await res.json();
+            return [];
+        } catch(e) { console.error("Comment fetch error", e); return []; }
+    }
+    
+    async function postComment(productId, userName, commentText) {
+        if (!REAL_COMMENT_API_URL) return false;
+        if (!userName.trim()) userName = "Anonymous";
+        if (!commentText.trim()) return false;
+        try {
+            const res = await fetch(REAL_COMMENT_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, userName: userName.trim(), commentText: commentText.trim() })
+            });
+            return res.ok;
+        } catch(e) { console.error("Post comment error", e); return false; }
+    }
+    
+    // Open modal and load product details + shared comments
+    async function openProductModalById(productId) {
+        const product = getProductById(productId);
+        if (!product) return;
+        const images = product.additionalImages && product.additionalImages.length ? product.additionalImages : [product.ImageURL];
+        const mainImg = images[0];
+        const thumbnailsHtml = images.slice(1).map(img => `<img src="${img}" class="thumb-img" onclick="document.getElementById('modalMainImage').src='${img}'">`).join('');
+        const storedNickname = localStorage.getItem('am_nickname') || '';
+        const defaultName = storedNickname || (localStorage.getItem('am_user_email')?.split('@')[0] || 'Guest');
+        const modalHtml = `
+            <div>
+                <div class="modal-product-title">${escapeHtml(product.ProductName)}</div>
+                <div class="gallery-area">
+                    <div class="main-gallery-img"><img id="modalMainImage" src="${mainImg}" style="width:100%; border-radius:16px;"></div>
+                    <div class="thumb-list">${thumbnailsHtml}</div>
+                </div>
+                <div class="product-description">📝 <strong>Detailed Description</strong><br>${escapeHtml(product.detailedDesc)}</div>
+                <div class="product-price-modal">PKR ${product.Price}</div>
+                <a href="${product.ProductLink || '#'}" target="_blank" class="order-btn-modal">🛒 ORDER NOW</a>
+                <div class="comments-section" id="commentsSection_${product.productId}">
+                    <div class="comments-title">💬 Customer Comments (Global)</div>
+                    <div id="commentList_${product.productId}" class="comment-list">Loading comments...</div>
+                    <div class="add-comment">
+                        <input type="text" id="commentName_${product.productId}" class="name-input" placeholder="Your name" value="${escapeHtml(defaultName)}">
+                        <textarea id="commentText_${product.productId}" class="comment-input" rows="2" placeholder="Share your thoughts about this product..."></textarea>
+                        <button class="submit-comment-btn" data-pid="${product.productId}">💬 Post Comment</button>
+                    </div>
+                    <div id="commentStatus_${product.productId}" class="comment-status"></div>
+                </div>
+            </div>
+        `;
+        modalContentDiv.innerHTML = modalHtml;
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        const loadAndRenderComments = async () => {
+            const comments = await fetchComments(product.productId);
+            const commentContainer = document.getElementById(`commentList_${product.productId}`);
+            if (commentContainer) {
+                if (!comments || comments.length === 0) {
+                    commentContainer.innerHTML = '<div class="single-comment" style="text-align:center;">✨ No comments yet. Be the first to review!</div>';
+                } else {
+                    commentContainer.innerHTML = comments.map(c => `<div class="single-comment"><div class="comment-user">👤 ${escapeHtml(c.userName)}</div><div class="comment-text">${escapeHtml(c.commentText)}</div><div class="comment-date">${new Date(c.timestamp).toLocaleString()}</div></div>`).join('');
+                }
+            }
+        };
+        await loadAndRenderComments();
+        
+        const submitBtn = document.querySelector(`.submit-comment-btn[data-pid="${product.productId}"]`);
+        if (submitBtn) {
+            submitBtn.onclick = async () => {
+                const nameInput = document.getElementById(`commentName_${product.productId}`);
+                const textInput = document.getElementById(`commentText_${product.productId}`);
+                const userName = nameInput.value.trim() || "Anonymous";
+                const commentText = textInput.value.trim();
+                if (!commentText) { document.getElementById(`commentStatus_${product.productId}`).innerText = "⚠️ Please write a comment."; return; }
+                const success = await postComment(product.productId, userName, commentText);
+                if (success) {
+                    textInput.value = '';
+                    document.getElementById(`commentStatus_${product.productId}`).innerHTML = "✅ Comment posted! Refreshing...";
+                    await loadAndRenderComments();
+                    setTimeout(() => { document.getElementById(`commentStatus_${product.productId}`).innerHTML = ""; }, 2000);
+                } else {
+                    document.getElementById(`commentStatus_${product.productId}`).innerHTML = "❌ Failed to post comment. Check API URL or CORS.";
                 }
             };
-            await loadAndRenderComments();
-            
-            // attach submit event
-            const submitBtn = document.querySelector(`.submit-comment-btn[data-pid="${product.productId}"]`);
-            if (submitBtn) {
-                submitBtn.onclick = async () => {
-                    const nameInput = document.getElementById(`commentName_${product.productId}`);
-                    const textInput = document.getElementById(`commentText_${product.productId}`);
-                    const userName = nameInput.value.trim() || "AM Customer";
-                    const commentText = textInput.value.trim();
-                    if (!commentText) { document.getElementById(`commentStatus_${product.productId}`).innerText = "⚠️ Please write a comment."; return; }
-                    const success = await postComment(product.productId, userName, commentText);
-                    if (success) {
-                        textInput.value = '';
-                        document.getElementById(`commentStatus_${product.productId}`).innerHTML = "✅ Comment posted! Refreshing...";
-                        await loadAndRenderComments();
-                        setTimeout(() => { document.getElementById(`commentStatus_${product.productId}`).innerHTML = ""; }, 2000);
-                    } else {
-                        document.getElementById(`commentStatus_${product.productId}`).innerHTML = "❌ Failed to post comment. Check backend or try again.";
-                    }
-                };
-            }
         }
-        
-        // close modal
-        document.getElementById('closeModalBtn')?.addEventListener('click', () => { modal.style.display = 'none'; document.body.style.overflow = ''; });
-        window.addEventListener('click', (e) => { if (e.target === modal) { modal.style.display = 'none'; document.body.style.overflow = ''; } });
-        
-        // Navbar & search
-        function setActiveCategory(category) {
-            activeCategory = category;
-            if (category === "products") { navProducts.classList.add("nav-active"); navCollection.classList.remove("nav-active"); activeBadge.innerText = "✦ MAIN PRODUCTS ✦"; }
-            else { navCollection.classList.add("nav-active"); navProducts.classList.remove("nav-active"); activeBadge.innerText = "✦ EXCLUSIVE COLLECTION ✦"; }
-            refreshProductDisplay();
-        }
-        navProducts.addEventListener('click', () => setActiveCategory("products"));
-        navCollection.addEventListener('click', () => setActiveCategory("collection"));
-        searchInput.addEventListener('input', (e) => { currentSearchTerm = e.target.value; refreshProductDisplay(); });
-        
-        window.addEventListener('load', () => { startOrbitAnimation(); loadAllData(); });
-    </script>
+    }
+    
+    // Close product modal
+    document.getElementById('closeModalBtn')?.addEventListener('click', () => { modal.style.display = 'none'; document.body.style.overflow = ''; });
+    window.addEventListener('click', (e) => { if (e.target === modal) { modal.style.display = 'none'; document.body.style.overflow = ''; } });
+    
+    // Navbar & search
+    function setActiveCategory(category) {
+        activeCategory = category;
+        if (category === "products") { navProducts.classList.add("nav-active"); navCollection.classList.remove("nav-active"); activeBadge.innerText = "✦ MAIN PRODUCTS ✦"; }
+        else { navCollection.classList.add("nav-active"); navProducts.classList.remove("nav-active"); activeBadge.innerText = "✦ EXCLUSIVE COLLECTION ✦"; }
+        refreshProductDisplay();
+    }
+    navProducts.addEventListener('click', () => setActiveCategory("products"));
+    navCollection.addEventListener('click', () => setActiveCategory("collection"));
+    searchInput.addEventListener('input', (e) => { currentSearchTerm = e.target.value; refreshProductDisplay(); });
+    
+    window.addEventListener('load', () => { startOrbitAnimation(); loadAllData(); });
+</script>
 </body>
 </html>
 
